@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: dhadiya-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: dhadiyadb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  dhadiya-tenants:
+    build:
+      context: ./dhadiya-tenants
+      dockerfile_inline: |
+        FROM eclipse-temurin:17-jdk-alpine AS builder
+        WORKDIR /app
+        COPY . .
+        RUN ./mvnw clean package -DskipTests
+        FROM eclipse-temurin:17-jre-alpine
+        WORKDIR /app
+        COPY --from=builder /app/target/*.jar app.jar
+        EXPOSE 8081
+        ENTRYPOINT ["java", "-jar", "app.jar"]
+    container_name: dhadiya-tenants-service
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: dhadiyadb
+      DB_USER: postgres
+      DB_PASS: postgrespassword
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  dhadiya-flow:
+    build:
+      context: ./dhadiya-flow
+      dockerfile_inline: |
+        FROM eclipse-temurin:17-jdk-alpine AS builder
+        WORKDIR /app
+        COPY . .
+        RUN ./mvnw clean package -DskipTests
+        FROM eclipse-temurin:17-jre-alpine
+        WORKDIR /app
+        COPY --from=builder /app/target/*.jar app.jar
+        EXPOSE 8082
+        ENTRYPOINT ["java", "-jar", "app.jar"]
+    container_name: dhadiya-flow-middleware
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: dhadiyadb
+      DB_USER: postgres
+      DB_PASS: postgrespassword
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  dhadiya-portal:
+    build:
+      context: ./dhadiya-portal
+      dockerfile_inline: |
+        FROM node:18-alpine AS build
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm ci
+        COPY . .
+        RUN npm run build
+        FROM nginx:alpine
+        COPY --from=build /app/dist/dhadiya-portal /usr/share/nginx/html
+        EXPOSE 80
+        CMD ["nginx", "-g", "daemon off;"]
+    container_name: dhadiya-web-portal
+    ports:
+      - "4200:80"
+    depends_on:
+      - dhadiya-tenants
+      - dhadiya-flow
+
+volumes:
+  pgdata:

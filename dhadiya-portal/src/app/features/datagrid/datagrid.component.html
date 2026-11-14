@@ -1,0 +1,53 @@
+<div style="padding: 28px; max-width: 1240px; margin: 0 auto;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div>
+      <h1 style="font-size: 26px; font-weight: 800; color: #0f172a;">Showroom Inventory & Operations DataGrids</h1>
+      <p style="color: #64748b; font-size: 14px;">High-speed dynamic database queries for showroom floor inventory and client orders powered by <strong>dhadiya-flow</strong>.</p>
+    </div>
+    
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <label style="font-size: 13px; font-weight: 700; color: #475569;">Select Grid Table:</label>
+      <select [(ngModel)]="selectedTable" (change)="onTableChange()" style="padding: 8px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600; color: #0f172a; background: white;">
+        <option *ngFor="let t of tables" [value]="t.tableName">{{ t.label }} ({{ t.tableName }})</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-size: 13px; color: #64748b;">Table Catalog Key: <code>{{ selectedTable }}</code></span>
+      <span style="font-size: 13px; font-weight: 700; color: #0284c7;">Total Rows: {{ records.length }}</span>
+    </div>
+
+    <div style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th *ngFor="let col of columns">{{ col | titlecase }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of records">
+            <td *ngFor="let col of columns">
+              <span *ngIf="col === 'severity' || col === 'riskIndex'"
+                    class="badge"
+                    [style.background]="row[col] === 'HIGH' || row[col] === 'High' ? '#fee2e2' : (row[col] === 'MEDIUM' || row[col] === 'Medium' ? '#fef3c7' : '#dcfce7')"
+                    [style.color]="row[col] === 'HIGH' || row[col] === 'High' ? '#b91c1c' : (row[col] === 'MEDIUM' || row[col] === 'Medium' ? '#92400e' : '#15803d')">
+                {{ row[col] }}
+              </span>
+              <span *ngIf="col === 'status' || col === 'closureStatus'"
+                    class="badge"
+                    [style.background]="row[col] === 'CLOSED' || row[col] === 'CERTIFIED' ? '#dcfce7' : '#e0f2fe'"
+                    [style.color]="row[col] === 'CLOSED' || row[col] === 'CERTIFIED' ? '#15803d' : '#0369a1'">
+                {{ row[col] }}
+              </span>
+              <span *ngIf="col !== 'severity' && col !== 'riskIndex' && col !== 'status' && col !== 'closureStatus'">
+                {{ row[col] }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

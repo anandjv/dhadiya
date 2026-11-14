@@ -1,0 +1,336 @@
+<div style="padding: 28px; max-width: 1300px; margin: 0 auto;">
+  <!-- Notification Toast -->
+  <div *ngIf="notificationMessage" 
+       [style.background]="notificationType === 'success' ? '#065f46' : '#991b1b'"
+       style="color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <span style="font-weight: 600; font-size: 14px;">{{ notificationMessage }}</span>
+    <button (click)="notificationMessage = ''" style="background: none; border: none; color: white; cursor: pointer; font-size: 16px;">✕</button>
+  </div>
+
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <h1 style="font-size: 26px; font-weight: 800; color: #0f172a; margin: 0;">Dhadiya Flow Engine</h1>
+        <span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 700; font-size: 12px;">eFormsPi Powered</span>
+      </div>
+      <p style="color: #64748b; font-size: 14px; margin-top: 4px;">Dynamic multi-stage workflow execution, case tracking (WorkflowTrackMaster), task SLA inbox, and full lifecycle audit trail (WorkflowTrackDet).</p>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <div>
+        <select [(ngModel)]="selectedRealm" (change)="onRealmChange()" style="padding: 9px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-weight: 600; background: white; color: #1e293b;">
+          <option *ngFor="let r of realms" [value]="r">{{ r }}</option>
+        </select>
+      </div>
+      <button class="btn-primary" (click)="showStartModal = true">+ Initiate Workflow Case</button>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div style="display: flex; gap: 8px; border-bottom: 2px solid #e2e8f0; margin-bottom: 24px;">
+    <button (click)="activeTab = 'cases'" 
+            [style.border-bottom]="activeTab === 'cases' ? '3px solid #0284c7' : 'none'"
+            [style.color]="activeTab === 'cases' ? '#0284c7' : '#64748b'"
+            style="background: none; border: none; padding: 12px 20px; font-weight: 700; cursor: pointer; font-size: 14px;">
+      Live Cases ({{ cases.length }})
+    </button>
+    <button (click)="activeTab = 'tasks'" 
+            [style.border-bottom]="activeTab === 'tasks' ? '3px solid #0284c7' : 'none'"
+            [style.color]="activeTab === 'tasks' ? '#0284c7' : '#64748b'"
+            style="background: none; border: none; padding: 12px 20px; font-weight: 700; cursor: pointer; font-size: 14px;">
+      Task Inbox & SLAs ({{ tasks.length }})
+    </button>
+    <button (click)="activeTab = 'definitions'" 
+            [style.border-bottom]="activeTab === 'definitions' ? '3px solid #0284c7' : 'none'"
+            [style.color]="activeTab === 'definitions' ? '#0284c7' : '#64748b'"
+            style="background: none; border: none; padding: 12px 20px; font-weight: 700; cursor: pointer; font-size: 14px;">
+      Workflow Architectures ({{ workflows.length }})
+    </button>
+  </div>
+
+  <!-- 1. LIVE CASES TAB -->
+  <div *ngIf="activeTab === 'cases'" class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Case Number</th>
+          <th>Workflow</th>
+          <th>Current Stage</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Initiator</th>
+          <th>Initiated On</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of cases" style="cursor: pointer;" (click)="openCaseDetails(c)">
+          <td>
+            <a style="font-weight: 700; color: #0284c7; text-decoration: none;">{{ c.caseNumber }}</a>
+            <div *ngIf="c.tableName" style="font-size: 11px; color: #94a3b8;">Grid: {{ c.tableName }}</div>
+          </td>
+          <td>
+            <div style="font-weight: 600; color: #1e293b;">{{ c.workflowName || c.workflowCode }}</div>
+            <div style="font-size: 11px; color: #64748b;">{{ c.realmCode }}</div>
+          </td>
+          <td>
+            <span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 600;">
+              {{ c.currentStageName || c.currentStageCode }}
+            </span>
+          </td>
+          <td>
+            <span class="badge"
+                  [style.background]="c.priority === 'CRITICAL' || c.priority === 'HIGH' ? '#fee2e2' : '#fef3c7'"
+                  [style.color]="c.priority === 'CRITICAL' || c.priority === 'HIGH' ? '#991b1b' : '#92400e'">
+              {{ c.priority || 'MEDIUM' }}
+            </span>
+          </td>
+          <td>
+            <span class="badge"
+                  [style.background]="c.status === 'COMPLETED' ? '#dcfce7' : (c.status === 'REJECTED' ? '#fee2e2' : '#fef3c7')"
+                  [style.color]="c.status === 'COMPLETED' ? '#15803d' : (c.status === 'REJECTED' ? '#991b1b' : '#92400e')">
+              {{ c.status }}
+            </span>
+          </td>
+          <td style="font-size: 13px; color: #475569;">{{ c.initiatedBy || 'N/A' }}</td>
+          <td style="font-size: 13px; color: #64748b;">{{ c.initiatedOn | date:'mediumDate' }}</td>
+          <td>
+            <button (click)="$event.stopPropagation(); openCaseDetails(c)"
+                    style="background: #0284c7; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;">
+              Inspect Case
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 2. PENDING TASKS INBOX TAB -->
+  <div *ngIf="activeTab === 'tasks'" class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Task ID</th>
+          <th>Case Number</th>
+          <th>Stage</th>
+          <th>Task Title</th>
+          <th>Assigned Role / User</th>
+          <th>SLA Due Date</th>
+          <th>Status</th>
+          <th>Quick Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of tasks">
+          <td>#{{ t.id }}</td>
+          <td><strong>{{ t.caseNumber }}</strong></td>
+          <td><span class="badge" style="background: #f1f5f9; color: #475569;">{{ t.stageCode }}</span></td>
+          <td style="font-weight: 600; color: #1e293b;">{{ t.taskTitle }}</td>
+          <td>
+            <div><code>{{ t.assignedTo || 'Unassigned' }}</code></div>
+            <div *ngIf="t.roleName" style="font-size: 11px; color: #64748b;">Role: {{ t.roleName }}</div>
+          </td>
+          <td style="font-size: 13px; color: #64748b;">{{ t.slaDueDate | date:'short' }}</td>
+          <td>
+            <span class="badge" style="background: #fef3c7; color: #92400e;">{{ t.status }}</span>
+          </td>
+          <td style="display: flex; gap: 6px;">
+            <button (click)="quickTaskAction(t, 'APPROVE')" 
+                    style="background: #10b981; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; cursor: pointer;">
+              Approve
+            </button>
+            <button (click)="quickTaskAction(t, 'REJECT')" 
+                    style="background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; cursor: pointer;">
+              Reject
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. WORKFLOW DEFINITIONS TAB -->
+  <div *ngIf="activeTab === 'definitions'" style="display: flex; flex-direction: column; gap: 20px;">
+    <div *ngFor="let wf of workflows" class="card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <h3 style="font-size: 18px; font-weight: 700; margin: 0; color: #0f172a;">{{ wf.workflowName }}</h3>
+            <span class="badge" style="background: #dcfce7; color: #15803d;">v{{ wf.version || 1 }} ACTIVE</span>
+            <span *ngIf="wf.isCapa" class="badge" style="background: #fef3c7; color: #92400e;">CAPA Enabled</span>
+          </div>
+          <p style="color: #64748b; font-size: 14px; margin-top: 6px;">{{ wf.workflowDesc }}</p>
+          <div style="display: flex; gap: 16px; font-size: 12px; color: #475569; margin-top: 6px;">
+            <span><strong>Code:</strong> <code>{{ wf.workflowCode }}</code></span>
+            <span><strong>Backing Table:</strong> <code>{{ wf.tableName || 'N/A' }}</code></span>
+            <span><strong>Form:</strong> <code>{{ wf.formCode || 'N/A' }}</code></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage Flow Progression -->
+      <h4 style="font-size: 13px; font-weight: 700; color: #334155; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">Stages & Transition Pipeline</h4>
+      <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px;">
+        <div *ngFor="let s of wf.stages; let i = index" 
+             style="min-width: 200px; padding: 14px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; position: relative;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 11px; font-weight: 800; color: #0284c7;">STEP {{ s.stageOrder || (i + 1) }}</span>
+            <span class="badge" style="background: #e2e8f0; color: #334155; font-size: 10px;">{{ s.stageType }}</span>
+          </div>
+          <div style="font-weight: 700; font-size: 14px; color: #0f172a; margin-bottom: 6px;">{{ s.stageName }}</div>
+          <div style="font-size: 12px; color: #64748b;">Role: <strong>{{ s.allowedRole || 'ANY' }}</strong></div>
+          <div style="font-size: 12px; color: #64748b;">SLA: <strong>{{ s.slaHours || 24 }}h</strong></div>
+          <div *ngIf="s.actionsAllowed" style="margin-top: 8px; font-size: 11px; color: #0369a1;">
+            Actions: <code>{{ s.actionsAllowed }}</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CASE DETAILS & EXECUTION INSPECTOR MODAL -->
+  <div *ngIf="showCaseModal && selectedCase" 
+       style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px;">
+    <div class="card" style="width: 900px; max-width: 95%; max-height: 90vh; overflow-y: auto; padding: 28px;">
+      
+      <!-- Modal Header -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 20px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <h2 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0;">Case {{ selectedCase.caseNumber }}</h2>
+            <span class="badge"
+                  [style.background]="selectedCase.status === 'COMPLETED' ? '#dcfce7' : (selectedCase.status === 'REJECTED' ? '#fee2e2' : '#fef3c7')"
+                  [style.color]="selectedCase.status === 'COMPLETED' ? '#15803d' : (selectedCase.status === 'REJECTED' ? '#991b1b' : '#92400e')">
+              {{ selectedCase.status }}
+            </span>
+            <span class="badge" style="background: #e0f2fe; color: #0369a1;">
+              Stage: {{ selectedCase.currentStageName || selectedCase.currentStageCode }}
+            </span>
+          </div>
+          <p style="color: #64748b; font-size: 13px; margin-top: 4px;">
+            Workflow: <strong>{{ selectedCase.workflowName }}</strong> ({{ selectedCase.realmCode }}) | Initiated by <code>{{ selectedCase.initiatedBy }}</code> on {{ selectedCase.initiatedOn | date:'medium' }}
+          </p>
+        </div>
+        <button (click)="showCaseModal = false" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #64748b;">✕</button>
+      </div>
+
+      <!-- Transition Execution Controls (Only if IN_PROGRESS) -->
+      <div *ngIf="selectedCase.status === 'IN_PROGRESS'" 
+           style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 18px; border-radius: 8px; margin-bottom: 24px;">
+        <h4 style="font-size: 14px; font-weight: 700; color: #166534; margin: 0 0 10px 0;">⚡ Execute Workflow Stage Transition</h4>
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Auditor / Actor Email</label>
+          <input type="text" [(ngModel)]="actionUser" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+        </div>
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Execution Remarks & Justification</label>
+          <input type="text" [(ngModel)]="executionRemarks" placeholder="Enter findings, verification notes, or sign-off remarks..." style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <span style="font-size: 12px; font-weight: 700; color: #166534;">Available Actions:</span>
+          <button *ngFor="let act of availableActions" 
+                  (click)="executeAction(act)"
+                  [style.background]="act.includes('REJECT') || act.includes('CANCEL') ? '#ef4444' : '#10b981'"
+                  style="color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            {{ act }}
+          </button>
+          <span *ngIf="availableActions.length === 0" style="color: #64748b; font-size: 13px;">No actions configured for current stage.</span>
+        </div>
+      </div>
+
+      <!-- Case Dynamic Payload Section -->
+      <div style="margin-bottom: 24px;">
+        <h4 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Case Form Data & Attributes</h4>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+            <div *ngFor="let k of getPayloadKeys()" style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px;">
+              <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">{{ k }}</div>
+              <div style="font-size: 14px; font-weight: 600; color: #0f172a; margin-top: 4px;">{{ casePayload[k] }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full Audit Trail / WorkflowTrackDet History -->
+      <div>
+        <h4 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Lifecycle Audit Trail (WorkflowTrackDet)</h4>
+        <div style="position: relative; padding-left: 20px; border-left: 2px solid #e2e8f0;">
+          <div *ngFor="let h of caseHistory; let i = index" style="margin-bottom: 18px; position: relative;">
+            <!-- Bullet -->
+            <div style="position: absolute; left: -26px; top: 2px; width: 10px; height: 10px; border-radius: 50%; background: #0284c7; border: 2px solid white;"></div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <div>
+                <strong style="color: #0f172a; font-size: 14px;">{{ h.stageName || h.stageCode }}</strong>
+                <span class="badge" style="background: #e2e8f0; color: #334155; margin-left: 8px;">Action: {{ h.actionTaken }}</span>
+              </div>
+              <span style="font-size: 12px; color: #94a3b8;">{{ h.performedOn | date:'medium' }}</span>
+            </div>
+            
+            <div style="font-size: 13px; color: #475569; margin-top: 4px;">
+              Acted By: <code>{{ h.actedBy || 'System' }}</code>
+              <span *ngIf="h.durationSeconds !== undefined" style="margin-left: 12px; color: #64748b; font-size: 12px;">(Duration: {{ formatDuration(h.durationSeconds) }})</span>
+            </div>
+            <div *ngIf="h.remarks" style="margin-top: 4px; font-size: 13px; background: white; border: 1px solid #e2e8f0; padding: 6px 10px; border-radius: 4px; color: #334155; font-style: italic;">
+              "{{ h.remarks }}"
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+        <button (click)="showCaseModal = false" class="btn-primary">Close Inspector</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INITIATE PROCESS CASE MODAL -->
+  <div *ngIf="showStartModal" 
+       style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px;">
+    <div class="card" style="width: 560px; max-width: 95%; max-height: 90vh; overflow-y: auto;">
+      <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 6px; color: #0f172a;">Initiate Workflow Case</h2>
+      <p style="color: #64748b; font-size: 13px; margin-bottom: 18px;">Spawn an active instance into Dhadiya Flow's dynamic workflow engine with synchronized data grid records.</p>
+      
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 4px;">Workflow Architecture</label>
+        <select [(ngModel)]="newCase.workflowCode" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+          <option *ngFor="let wf of workflows" [value]="wf.workflowCode">{{ wf.workflowName }} ({{ wf.workflowCode }})</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 4px;">Tenant Realm</label>
+        <select [(ngModel)]="newCase.realmCode" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+          <option *ngFor="let r of realms" [value]="r">{{ r }}</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 4px;">Priority Level</label>
+        <select [(ngModel)]="newCase.priority" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+          <option value="LOW">LOW</option>
+          <option value="MEDIUM">MEDIUM</option>
+          <option value="HIGH">HIGH</option>
+          <option value="CRITICAL">CRITICAL</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 4px;">Initiator Email</label>
+        <input type="text" [(ngModel)]="newCase.initiatedBy" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+      </div>
+
+      <div style="margin-bottom: 18px;">
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 4px;">Initial Case Data Payload (JSON)</label>
+        <textarea rows="4" [(ngModel)]="newCase.initialPayloadJson" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 12px;"></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button (click)="showStartModal = false" style="padding: 9px 18px; border: 1px solid #cbd5e1; border-radius: 6px; background: white; cursor: pointer; font-weight: 600;">Cancel</button>
+        <button (click)="startWorkflowCase()" class="btn-primary">Initiate Case</button>
+      </div>
+    </div>
+  </div>
+</div>

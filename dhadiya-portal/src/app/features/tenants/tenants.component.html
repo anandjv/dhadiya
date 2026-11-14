@@ -1,0 +1,71 @@
+<div style="padding: 28px; max-width: 1240px; margin: 0 auto;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div>
+      <h1 style="font-size: 26px; font-weight: 800; color: #0f172a;">Showroom Region & Territory Management</h1>
+      <p style="color: #64748b; font-size: 14px;">Manage multi-tenant showroom regions under dhadiya.com (Americas, EMEA, APAC), flagship domains, and operational statuses.</p>
+    </div>
+    <button class="btn-primary" (click)="showCreateModal = true">+ Provision Showroom Region</button>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Realm Code</th>
+          <th>Organization Name</th>
+          <th>Custom Domain</th>
+          <th>Status</th>
+          <th>Configuration JSON</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of realms">
+          <td><code>{{ r.realmCode }}</code></td>
+          <td><strong>{{ r.organizationName }}</strong></td>
+          <td><a href="https://{{ r.customDomain }}" target="_blank" style="color: #0284c7; text-decoration: none; font-weight: 500;">{{ r.customDomain }}</a></td>
+          <td>
+            <span class="badge" 
+                  [style.background]="r.status === 'ACTIVE' ? '#dcfce7' : (r.status === 'PROVISIONING' ? '#fef3c7' : '#fee2e2')"
+                  [style.color]="r.status === 'ACTIVE' ? '#15803d' : (r.status === 'PROVISIONING' ? '#92400e' : '#b91c1c')">
+              {{ r.status }}
+            </span>
+          </td>
+          <td><code style="font-size: 11px; color: #475569;">{{ r.settingsJson | slice:0:45 }}...</code></td>
+          <td>
+            <button (click)="toggleStatus(r)" style="padding: 4px 12px; border: 1px solid #cbd5e1; border-radius: 4px; background: white; cursor: pointer; font-size: 12px; font-weight: 600;">
+              Toggle Status
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Provision Modal -->
+  <div *ngIf="showCreateModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 50;">
+    <div class="card" style="width: 500px; max-width: 90%;">
+      <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">Provision Showroom Region / Realm</h2>
+      
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Region Realm Code</label>
+        <input type="text" [(ngModel)]="newRealm.realmCode" placeholder="e.g. dhadiya-showroom-latam" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Territory / Showroom Group Name</label>
+        <input type="text" [(ngModel)]="newRealm.organizationName" placeholder="e.g. Dhadiya Luxury Showrooms LATAM (São Paulo, Mexico City)" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;">Custom Domain</label>
+        <input type="text" [(ngModel)]="newRealm.customDomain" placeholder="e.g. energy.dhadiya.com" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+        <button (click)="showCreateModal = false" style="padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 6px; background: white; cursor: pointer; font-weight: 600;">Cancel</button>
+        <button class="btn-primary" (click)="createRealm()">Provision Realm</button>
+      </div>
+    </div>
+  </div>
+</div>
