@@ -16,6 +16,10 @@ export class RealmService {
     return this.http.get<TenantRealm[]>(this.baseUrl);
   }
 
+  getRealms(): Observable<TenantRealm[]> {
+    return this.getAll();
+  }
+
   getByCode(code: string): Observable<TenantRealm> {
     return this.http.get<TenantRealm>(`${this.baseUrl}/${code}`);
   }

@@ -1,90 +1,209 @@
-<div style="padding: 28px; max-width: 1240px; margin: 0 auto;">
+<div class="page-container">
   <!-- Welcome Header -->
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px;">
+  <div class="page-header">
     <div>
-      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-        <span style="background: #0284c7; color: white; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px;">GLOBAL SHOWROOM CLOUD</span>
-        <span style="color: #64748b; font-size: 13px;">&bull; showrooms.dhadiya.com Platform</span>
+      <div class="breadcrumb">
+        <span class="badge-accent">GLOBAL SHOWROOM CLOUD</span>
+        <span class="text-muted">&bull; showrooms.dhadiya.com Platform</span>
       </div>
-      <h1 style="font-size: 28px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px;">Global Showroom Operations Console</h1>
-      <p style="color: #64748b; font-size: 14px; margin-top: 4px;">Unified management for Flagship Showroom Territories (EMEA, Americas, APAC), Vehicle PDI Handover Workflows, and Dynamic Showroom Floor Inventory.</p>
+      <h1 class="page-title">Global Showroom Operations Console</h1>
+      <p class="page-subtitle">
+        Unified executive management for Flagship Showroom Territories (Americas, EMEA, APAC), Staff RBAC Clearances, Vehicle PDI Handover Workflows, and Dynamic Inventory.
+      </p>
     </div>
-    <div style="display: flex; gap: 10px;">
-      <a routerLink="/studio" style="background: linear-gradient(135deg, #0284c7, #2563eb); color: white; text-decoration: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 14px; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4); display: flex; align-items: center; gap: 6px;">⚡ Open Zora Studio</a>
-      <a routerLink="/workflows" class="btn-primary" style="text-decoration: none;">+ Initiate Showroom Case</a>
+    <div class="page-actions" style="display: flex; gap: 10px;">
+      <a routerLink="/users" class="btn-secondary" style="text-decoration: none;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+        </svg>
+        Manage Staff
+      </a>
+      <a routerLink="/studio" class="btn-luxury" style="text-decoration: none;">
+        ⚡ Open Zora Studio
+      </a>
     </div>
   </div>
 
   <!-- Metric Overview Cards -->
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 32px;">
-    <div class="card" style="border-top: 4px solid #0284c7;">
-      <div style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase;">Flagship Territories & Realms</div>
-      <div style="font-size: 34px; font-weight: 800; color: #0f172a; margin: 10px 0;">{{ realmCount }}</div>
-      <a routerLink="/tenants" style="color: #0284c7; font-size: 13px; text-decoration: none; font-weight: 600;">View Showroom Regions &rarr;</a>
+  <div class="kpi-grid">
+    <div class="kpi-card" style="border-top: 4px solid #0284c7;">
+      <div class="kpi-header">
+        <span class="kpi-label">SHOWROOM STAFF & USERS</span>
+        <div class="kpi-icon-wrap" style="background: rgba(2, 132, 199, 0.1); color: #0284c7;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">{{ userCount }}</div>
+      <a routerLink="/users" style="color: #0284c7; font-size: 13px; text-decoration: none; font-weight: 700;">View Staff Directory &rarr;</a>
     </div>
 
-    <div class="card" style="border-top: 4px solid #10b981;">
-      <div style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase;">Active PDI & Handover Cases</div>
-      <div style="font-size: 34px; font-weight: 800; color: #0f172a; margin: 10px 0;">{{ instanceCount }}</div>
-      <a routerLink="/workflows" style="color: #059669; font-size: 13px; text-decoration: none; font-weight: 600;">Track Vehicle Stages &rarr;</a>
+    <div class="kpi-card" style="border-top: 4px solid #10b981;">
+      <div class="kpi-header">
+        <span class="kpi-label">PDI & VIP HANDOVER CASES</span>
+        <div class="kpi-icon-wrap" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">{{ instanceCount }}</div>
+      <a routerLink="/workflows" style="color: #059669; font-size: 13px; text-decoration: none; font-weight: 700;">Track Vehicle Stages &rarr;</a>
     </div>
 
-    <div class="card" style="border-top: 4px solid #f59e0b;">
-      <div style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase;">Pending Showroom Tasks</div>
-      <div style="font-size: 34px; font-weight: 800; color: #0f172a; margin: 10px 0;">{{ pendingTasksCount }}</div>
-      <a routerLink="/workflows" style="color: #d97706; font-size: 13px; text-decoration: none; font-weight: 600;">Open Task Inbox &rarr;</a>
+    <div class="kpi-card" style="border-top: 4px solid #f59e0b;">
+      <div class="kpi-header">
+        <span class="kpi-label">PENDING SHOWROOM TASKS</span>
+        <div class="kpi-icon-wrap" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">{{ pendingTasksCount }}</div>
+      <a routerLink="/workflows" style="color: #d97706; font-size: 13px; text-decoration: none; font-weight: 700;">Open Task Inbox &rarr;</a>
     </div>
 
-    <div class="card" style="border-top: 4px solid #8b5cf6;">
-      <div style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase;">Showroom Inventory Grids</div>
-      <div style="font-size: 34px; font-weight: 800; color: #0f172a; margin: 10px 0;">{{ tableCount }}</div>
-      <a routerLink="/datagrid" style="color: #7c3aed; font-size: 13px; text-decoration: none; font-weight: 600;">Explore Floor Inventory &rarr;</a>
+    <div class="kpi-card" style="border-top: 4px solid #9333ea;">
+      <div class="kpi-header">
+        <span class="kpi-label">FLAGSHIP TERRITORIES</span>
+        <div class="kpi-icon-wrap" style="background: rgba(147, 51, 234, 0.1); color: #9333ea;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">{{ realmCount }}</div>
+      <a routerLink="/tenants" style="color: #7c3aed; font-size: 13px; text-decoration: none; font-weight: 700;">Explore Territories &rarr;</a>
     </div>
   </div>
 
-  <!-- Zora Studio Feature Showcase -->
-  <div class="card" style="margin-bottom: 28px; background: linear-gradient(135deg, #0f172a, #1e293b); color: white; border: 1px solid #334155;">
+  <!-- Zora Studio Suite Banner -->
+  <div class="table-card" style="margin-bottom: 28px; background: linear-gradient(135deg, #070a12 0%, #0f172a 100%); color: white; border: 1px solid #1e293b; padding: 24px;">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
       <div>
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-          <span style="background: #0284c7; color: white; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px;">ZORA STUDIO</span>
-          <span style="color: #38bdf8; font-weight: 700; font-size: 13px;">Low-Code Suite for Global Showroom Networks</span>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span style="background: #0284c7; color: white; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px;">ZORA STUDIO SUITE</span>
+          <span style="color: #38bdf8; font-weight: 700; font-size: 13px;">Low-Code Engine for Global Showrooms</span>
         </div>
-        <h2 style="font-size: 20px; font-weight: 800; color: white; margin: 0 0 6px 0;">Design Showroom Tables, Handover Forms & Workflows</h2>
-        <p style="color: #94a3b8; font-size: 13px; margin: 0; max-width: 680px;">Construct vehicle inventory schemas, VIP inspection checklists with conditional logic, and multi-stage showroom delivery workflows powered by <strong>dhadiya-flow</strong>.</p>
+        <h2 style="font-size: 20px; font-weight: 800; color: white; margin: 0 0 6px 0;">Dynamic Floor Grids, VIP Handover Forms & Workflows</h2>
+        <p style="color: #94a3b8; font-size: 13.5px; margin: 0; max-width: 720px;">Construct vehicle inventory schemas, 120-point PDI checklists with conditional logic rules, and multi-stage luxury vehicle delivery protocols powered by <strong>dhadiya-flow</strong>.</p>
       </div>
       <div style="display: flex; gap: 10px;">
-        <a routerLink="/studio" style="padding: 10px 18px; background: #0284c7; color: white; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 13px; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);">Launch Zora Studio &rarr;</a>
+        <a routerLink="/studio" class="btn-luxury" style="background: linear-gradient(135deg, #0284c7, #2563eb);">⚡ Launch Zora Studio &rarr;</a>
       </div>
     </div>
   </div>
 
-  <!-- Microservices Architecture Topology -->
-  <div class="card" style="margin-bottom: 28px;">
-    <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #0f172a;">Dhadiya Global Showroom Architecture</h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-      <div style="padding: 18px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <strong style="color: #0f172a; font-size: 15px;">dhadiya-tenants</strong>
-          <span class="badge" style="background: #e0f2fe; color: #0369a1;">PORT 8081</span>
+  <!-- Real-Time Activity Grid -->
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+    <!-- Active Floor Vehicles -->
+    <div class="table-card">
+      <div class="toolbar">
+        <div>
+          <div style="font-size: 14px; font-weight: 800; color: #0f172a;">Live Showroom Vehicles in Pipeline</div>
+          <div style="font-size: 12px; color: #64748b;">Current stage in PDI Handover Workflow</div>
         </div>
-        <p style="font-size: 13px; color: #64748b; margin-top: 8px;">Showroom Territory & Flagship Isolation API. Enforces regional boundaries for Americas, EMEA, and APAC.</p>
+        <a routerLink="/datagrid" class="btn-action" style="text-decoration: none;">Full Inventory &rarr;</a>
       </div>
 
-      <div style="padding: 18px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <strong style="color: #0f172a; font-size: 15px;">dhadiya-flow</strong>
-          <span class="badge" style="background: #dcfce7; color: #15803d;">PORT 8082</span>
-        </div>
-        <p style="font-size: 13px; color: #64748b; margin-top: 8px;">Unified Middleware Engine. Orchestrates Vehicle PDI Handover Workflows, Dynamic Forms, and Showroom Floor DataGrids.</p>
+      <div class="table-responsive">
+        <table class="luxury-table">
+          <thead>
+            <tr>
+              <th>Tracking #</th>
+              <th>Vehicle Model</th>
+              <th>Location</th>
+              <th>Current Stage</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color: #0284c7;">DHADIYA-2026-001</strong></td>
+              <td>
+                <div style="font-weight: 700;">Porsche 911 GT3 RS</div>
+                <div style="font-size: 11.5px; color: #64748b;">Weissach Package &bull; Guards Red</div>
+              </td>
+              <td>Beverly Hills Rodeo Dr</td>
+              <td>
+                <span class="role-badge" style="background: #fef3c7; color: #d97706;">TECHNICAL_PDI</span>
+              </td>
+              <td>
+                <span class="status-pill active"><span class="status-dot"></span>IN_PROGRESS</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="color: #0284c7;">DHADIYA-2026-002</strong></td>
+              <td>
+                <div style="font-weight: 700;">Ferrari SF90 Stradale</div>
+                <div style="font-size: 11.5px; color: #64748b;">Assetto Fiorano &bull; Rosso Corsa</div>
+              </td>
+              <td>London Mayfair Gallery</td>
+              <td>
+                <span class="role-badge" style="background: #e0e7ff; color: #4338ca;">ON_FLOOR_DISPLAY</span>
+              </td>
+              <td>
+                <span class="status-pill active"><span class="status-dot"></span>ALLOCATED</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong style="color: #0284c7;">DHADIYA-2026-003</strong></td>
+              <td>
+                <div style="font-weight: 700;">Lexus LFA Nürburgring</div>
+                <div style="font-size: 11.5px; color: #64748b;">Carbon Edition &bull; Whitest White</div>
+              </td>
+              <td>Tokyo Ginza Flagship</td>
+              <td>
+                <span class="role-badge" style="background: #ecfdf5; color: #059669;">VIP_RESERVED</span>
+              </td>
+              <td>
+                <span class="status-pill active"><span class="status-dot"></span>RESERVED</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Quick Operations & Actions -->
+    <div class="table-card" style="padding: 24px;">
+      <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Quick Actions</div>
+      <div style="font-size: 12px; color: #64748b; margin-bottom: 18px;">Showroom administration shortcuts</div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <a routerLink="/users" class="btn-luxury" style="justify-content: center; background: #0f172a; border: 1px solid #334155;">
+          👥 Manage Staff & Permissions
+        </a>
+        <a routerLink="/workflows" class="btn-luxury" style="justify-content: center;">
+          🚗 Start New Vehicle PDI Case
+        </a>
+        <a routerLink="/studio" class="btn-luxury" style="justify-content: center; background: linear-gradient(135deg, #0284c7, #2563eb);">
+          ⚡ Build Table in Zora Studio
+        </a>
+        <a routerLink="/datagrid" class="btn-secondary" style="text-align: center; text-decoration: none;">
+          📋 Export Showroom Floor Excel
+        </a>
       </div>
 
-      <div style="padding: 18px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <strong style="color: #0f172a; font-size: 15px;">dhadiya-portal</strong>
-          <span class="badge" style="background: #f3e8ff; color: #7e22ce;">PORT 4200</span>
+      <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #e2e8f0;">
+        <div style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 8px;">Showroom Microservices</div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+          <span>Frontend Portal:</span>
+          <span style="font-weight: 700; color: #10b981;">Port 4200 (Online)</span>
         </div>
-        <p style="font-size: 13px; color: #64748b; margin-top: 8px;">Global Showroom Web Console: Technician PDI checklists, VIP handover ceremonies, and inventory analytics.</p>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+          <span>Tenants & Staff API:</span>
+          <span style="font-weight: 700; color: #10b981;">Port 8081 (Online)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+          <span>Middleware Flow Engine:</span>
+          <span style="font-weight: 700; color: #10b981;">Port 8082 (Online)</span>
+        </div>
       </div>
     </div>
   </div>

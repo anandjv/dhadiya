@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { RealmService } from '../../core/services/realm.service';
 import { OrchestrationService } from '../../core/services/orchestration.service';
 import { GridService } from '../../core/services/grid.service';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,21 +13,28 @@ import { GridService } from '../../core/services/grid.service';
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {
-  realmCount = 4;
+  realmCount = 5;
   instanceCount = 3;
   pendingTasksCount = 2;
   tableCount = 3;
+  userCount = 7;
 
   constructor(
     private realmService: RealmService,
     private orchestrationService: OrchestrationService,
-    private gridService: GridService
+    private gridService: GridService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
     this.realmService.getAll().subscribe({
-      next: (data) => this.realmCount = data.length || 4,
-      error: () => this.realmCount = 4
+      next: (data) => this.realmCount = data.length || 5,
+      error: () => this.realmCount = 5
+    });
+
+    this.userService.getUsers().subscribe({
+      next: (data) => this.userCount = data.length || 7,
+      error: () => this.userCount = 7
     });
 
     this.orchestrationService.getInstances().subscribe({
