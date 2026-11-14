@@ -24,6 +24,7 @@ public class TenantUserRequest {
     @NotBlank(message = "Role is required")
     private String role;
 
+    private String locationCode;
     private String showroomLocation;
     private String phoneNumber;
     private String status;

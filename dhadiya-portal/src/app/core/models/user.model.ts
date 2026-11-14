@@ -3,7 +3,8 @@ export interface ShowroomUser {
   realmCode: string;
   email: string;
   fullName: string;
-  role: 'SHOWROOM_DIRECTOR' | 'PDI_TECHNICIAN' | 'DETAILING_SPECIALIST' | 'FINANCE_MANAGER' | 'SALES_ADVISOR' | 'BRAND_AUDITOR' | string;
+  role: string;
+  locationCode?: string;
   showroomLocation: string;
   phoneNumber?: string;
   status: 'ACTIVE' | 'INVITED' | 'SUSPENDED' | string;
@@ -17,6 +18,7 @@ export interface UserInviteRequest {
   email: string;
   fullName: string;
   role: string;
+  locationCode?: string;
   showroomLocation: string;
   phoneNumber?: string;
   status?: string;

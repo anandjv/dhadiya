@@ -32,6 +32,9 @@ public class TenantUser {
     @Column(nullable = false, length = 64)
     private String role; // SHOWROOM_DIRECTOR, PDI_TECHNICIAN, DETAILING_SPECIALIST, FINANCE_MANAGER, SALES_ADVISOR, BRAND_AUDITOR
 
+    @Column(length = 64)
+    private String locationCode;
+
     @Column(length = 128)
     private String showroomLocation;
 

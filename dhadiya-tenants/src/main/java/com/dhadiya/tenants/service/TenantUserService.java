@@ -47,6 +47,7 @@ public class TenantUserService {
                 .email(request.getEmail())
                 .fullName(request.getFullName())
                 .role(request.getRole())
+                .locationCode(request.getLocationCode())
                 .showroomLocation(request.getShowroomLocation())
                 .phoneNumber(request.getPhoneNumber())
                 .status(request.getStatus() != null ? request.getStatus() : "ACTIVE")

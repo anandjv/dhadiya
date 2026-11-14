@@ -17,6 +17,7 @@ public class TenantUserResponse {
     private String email;
     private String fullName;
     private String role;
+    private String locationCode;
     private String showroomLocation;
     private String phoneNumber;
     private String status;
@@ -32,6 +33,7 @@ public class TenantUserResponse {
                 .email(entity.getEmail())
                 .fullName(entity.getFullName())
                 .role(entity.getRole())
+                .locationCode(entity.getLocationCode())
                 .showroomLocation(entity.getShowroomLocation())
                 .phoneNumber(entity.getPhoneNumber())
                 .status(entity.getStatus())

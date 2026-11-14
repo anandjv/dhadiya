@@ -94,17 +94,33 @@
   <div class="app-main-column">
     <!-- Top Executive Header -->
     <header class="app-topbar">
-      <!-- Territory Realm Switcher -->
-      <div class="topbar-left">
+      <!-- Dual Switcher: Customer Tenant + Dealership Location -->
+      <div class="topbar-left" style="display: flex; gap: 12px; align-items: center;">
+        <!-- 1. Customer Tenant -->
         <div class="territory-pill">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
           </svg>
-          <span class="territory-label">Active Territory:</span>
+          <span class="territory-label">Customer / Tenant:</span>
           <select [ngModel]="selectedRealmCode" (ngModelChange)="onRealmChange($event)" class="territory-select">
             <option *ngFor="let r of realms" [value]="r.realmCode">
               {{ r.organizationName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- 2. Showroom Dealership Location -->
+        <div class="territory-pill" style="background: #ffffff; border-color: #0284c7;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span class="territory-label" style="color: #0284c7;">Branch Location:</span>
+          <select [ngModel]="selectedLocationCode" (ngModelChange)="onLocationChange($event)" class="territory-select" style="font-weight: 800; color: #0284c7;">
+            <option value="all">🌐 All Locations (HQ View)</option>
+            <option *ngFor="let loc of filteredLocations" [value]="loc.locationCode">
+              📍 {{ loc.locationName }} ({{ loc.locationCode }})
             </option>
           </select>
         </div>

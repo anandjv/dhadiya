@@ -3,89 +3,102 @@
   <div class="page-header">
     <div>
       <div class="breadcrumb">
-        <span class="badge-accent">SHOWROOM WORKFORCE</span>
-        <span class="text-muted">&bull; Global Access Control & RBAC</span>
+        <span class="badge-accent">MULTI-LOCATION HIERARCHY</span>
+        <span class="text-muted">&bull; Tenant Locations & Dynamic RBAC Engine</span>
       </div>
-      <h1 class="page-title">Showroom Staff & User Management</h1>
+      <h1 class="page-title">Workforce, Locations & Dynamic Roles</h1>
       <p class="page-subtitle">
-        Manage authorized showroom directors, master PDI technicians, detailing leads, sales advisors, and compliance auditors across global territories.
+        Manage customer tenants (e.g., TVS Motor Company), multiple dealership/showroom locations, and create custom dynamic roles tailored to specific facilities.
       </p>
     </div>
-    <div class="page-actions">
-      <button class="btn-luxury" (click)="openInviteModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-          <circle cx="8.5" cy="7.5" r="4"></circle>
-          <line x1="20" y1="8" x2="20" y2="14"></line>
-          <line x1="23" y1="11" x2="17" y2="11"></line>
-        </svg>
-        Provision Showroom Staff
+
+    <!-- Action Buttons for Current Tab -->
+    <div class="page-actions" style="display: flex; gap: 10px;">
+      <button class="btn-secondary" *ngIf="activeTab === 'locations'" (click)="openLocationModal()">
+        + Add Showroom Location
+      </button>
+      <button class="btn-luxury" *ngIf="activeTab === 'roles'" (click)="openRoleModal()" style="background: linear-gradient(135deg, #9333ea, #7e22ce);">
+        + Create Dynamic Role
+      </button>
+      <button class="btn-luxury" *ngIf="activeTab === 'staff'" (click)="openUserModal()">
+        + Provision Staff Member
       </button>
     </div>
   </div>
 
-  <!-- KPI Metrics Cards -->
+  <!-- KPI Overview Grid -->
   <div class="kpi-grid">
-    <div class="kpi-card">
+    <div class="kpi-card" (click)="activeTab = 'staff'" style="cursor: pointer;" [style.border-color]="activeTab === 'staff' ? '#0284c7' : ''">
       <div class="kpi-header">
-        <span class="kpi-label">TOTAL SHOWROOM WORKFORCE</span>
+        <span class="kpi-label">SHOWROOM STAFF</span>
         <div class="kpi-icon-wrap" style="background: rgba(2, 132, 199, 0.1); color: #0284c7;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
             <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
         </div>
       </div>
       <div class="kpi-value">{{ totalUsers }}</div>
-      <div class="kpi-sub">Across 4 Global Showroom Territories</div>
+      <div class="kpi-sub">Active staff members across branches</div>
     </div>
 
-    <div class="kpi-card">
+    <div class="kpi-card" (click)="activeTab = 'locations'" style="cursor: pointer;" [style.border-color]="activeTab === 'locations' ? '#10b981' : ''">
       <div class="kpi-header">
-        <span class="kpi-label">SHOWROOM DIRECTORS</span>
+        <span class="kpi-label">DEALERSHIP BRANCHES</span>
+        <div class="kpi-icon-wrap" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">{{ totalLocations }}</div>
+      <div class="kpi-sub">Flagships in Bangalore, Chennai, Delhi, etc.</div>
+    </div>
+
+    <div class="kpi-card" (click)="activeTab = 'roles'" style="cursor: pointer;" [style.border-color]="activeTab === 'roles' ? '#9333ea' : ''">
+      <div class="kpi-header">
+        <span class="kpi-label">DYNAMIC ROLES</span>
         <div class="kpi-icon-wrap" style="background: rgba(147, 51, 234, 0.1); color: #9333ea;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
           </svg>
         </div>
       </div>
-      <div class="kpi-value">{{ directorsCount }}</div>
-      <div class="kpi-sub">Full Handover & Sign-off Authority</div>
-    </div>
-
-    <div class="kpi-card">
-      <div class="kpi-header">
-        <span class="kpi-label">PDI & DETAILING CREW</span>
-        <div class="kpi-icon-wrap" style="background: rgba(217, 119, 6, 0.1); color: #d97706;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-          </svg>
-        </div>
-      </div>
-      <div class="kpi-value">{{ techCount }}</div>
-      <div class="kpi-sub">Certified Inspection Technicians</div>
-    </div>
-
-    <div class="kpi-card">
-      <div class="kpi-header">
-        <span class="kpi-label">SALES & FINANCE MANAGERS</span>
-        <div class="kpi-icon-wrap" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-            <line x1="12" y1="8" x2="12" y2="16"></line>
-            <line x1="8" y1="12" x2="16" y2="12"></line>
-          </svg>
-        </div>
-      </div>
-      <div class="kpi-value">{{ salesCount }}</div>
-      <div class="kpi-sub">Client Clearance & Handover Specialists</div>
+      <div class="kpi-value">{{ totalRoles }}</div>
+      <div class="kpi-sub">Configurable permissions & scopes</div>
     </div>
   </div>
 
-  <!-- Filter & Search Toolbar -->
-  <div class="table-card">
+  <!-- Navigation Tabs -->
+  <div style="display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">
+    <button
+      (click)="activeTab = 'staff'"
+      class="tab-btn"
+      [class.tab-btn-active]="activeTab === 'staff'"
+    >
+      👥 Staff Directory ({{ filteredUsers.length }})
+    </button>
+    <button
+      (click)="activeTab = 'locations'"
+      class="tab-btn"
+      [class.tab-btn-active]="activeTab === 'locations'"
+    >
+      🏢 Showroom Locations ({{ filteredLocations.length }})
+    </button>
+    <button
+      (click)="activeTab = 'roles'"
+      class="tab-btn"
+      [class.tab-btn-active]="activeTab === 'roles'"
+    >
+      ⚡ Dynamic Roles & Permissions ({{ filteredRoles.length }})
+    </button>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TAB 1: STAFF DIRECTORY                    -->
+  <!-- ========================================== -->
+  <div class="table-card" *ngIf="activeTab === 'staff'">
     <div class="toolbar">
       <div class="search-input-wrap">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2">
@@ -94,50 +107,46 @@
         </svg>
         <input
           type="text"
-          placeholder="Search by staff name, email, or flagship location..."
+          placeholder="Search by name, email, location code..."
           [(ngModel)]="searchTerm"
-          (input)="applyFilters()"
+          (input)="applyUserFilters()"
           class="form-control"
         />
       </div>
 
       <div class="filter-controls">
-        <select [(ngModel)]="selectedRealm" (change)="applyFilters()" class="form-select">
-          <option value="all">All Showroom Territories</option>
+        <select [(ngModel)]="selectedRealm" (change)="onRealmFilterChange()" class="form-select">
+          <option value="all">All Customer Tenants</option>
           <option *ngFor="let r of realms" [value]="r.realmCode">{{ r.organizationName }}</option>
         </select>
 
-        <select [(ngModel)]="selectedRole" (change)="applyFilters()" class="form-select">
-          <option value="all">All Roles & Access Levels</option>
-          <option *ngFor="let role of roles" [value]="role.key">{{ role.label }}</option>
+        <select [(ngModel)]="selectedLocation" (change)="applyUserFilters()" class="form-select">
+          <option value="all">All Showroom Branches</option>
+          <option *ngFor="let l of locations" [value]="l.locationCode">{{ l.locationName }} ({{ l.locationCode }})</option>
         </select>
 
-        <select [(ngModel)]="selectedStatus" (change)="applyFilters()" class="form-select">
-          <option value="all">All Statuses</option>
-          <option value="ACTIVE">Active Access</option>
-          <option value="INVITED">Pending Invite</option>
-          <option value="SUSPENDED">Suspended</option>
+        <select [(ngModel)]="selectedRole" (change)="applyUserFilters()" class="form-select">
+          <option value="all">All Roles</option>
+          <option *ngFor="let role of roles" [value]="role.roleCode">{{ role.roleName }}</option>
         </select>
       </div>
     </div>
 
-    <!-- Staff Table -->
     <div class="table-responsive">
       <table class="luxury-table">
         <thead>
           <tr>
             <th>Staff Member</th>
-            <th>Showroom Territory</th>
-            <th>Flagship Facility</th>
-            <th>Role & Clearances</th>
+            <th>Customer / Tenant</th>
+            <th>Assigned Branch / Location</th>
+            <th>Dynamic Role</th>
             <th>Contact</th>
             <th>Status</th>
-            <th style="text-align: right;">Actions</th>
+            <th style="text-align: right;">Action</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let user of filteredUsers">
-            <!-- Staff Name & Avatar -->
             <td>
               <div class="user-profile-cell">
                 <div class="avatar-circle">
@@ -150,41 +159,38 @@
               </div>
             </td>
 
-            <!-- Territory -->
             <td>
-              <span class="realm-tag">
-                {{ user.realmCode }}
-              </span>
+              <span class="realm-tag">{{ user.realmCode }}</span>
             </td>
 
-            <!-- Flagship Location -->
             <td>
               <div class="location-cell">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                   <circle cx="12" cy="10" r="3"></circle>
                 </svg>
-                <span>{{ user.showroomLocation || 'Global Network' }}</span>
+                <div>
+                  <div style="font-weight: 700; color: #0f172a;">{{ user.locationCode || 'ALL' }}</div>
+                  <div style="font-size: 11px; color: #64748b;">{{ user.showroomLocation }}</div>
+                </div>
               </div>
             </td>
 
-            <!-- Role Badge -->
             <td>
               <span
                 class="role-badge"
-                [style.color]="getRoleConfig(user.role).color"
-                [style.background]="getRoleConfig(user.role).bg"
+                [style.background]="getRoleConfig(user.role).colorCode + '1a'"
+                [style.color]="getRoleConfig(user.role).colorCode"
+                [style.border]="'1px solid ' + getRoleConfig(user.role).colorCode + '40'"
               >
-                {{ getRoleConfig(user.role).label }}
+                {{ getRoleConfig(user.role).roleName }}
               </span>
             </td>
 
-            <!-- Phone -->
             <td class="text-muted">
               {{ user.phoneNumber || '—' }}
             </td>
 
-            <!-- Status -->
             <td>
               <span class="status-pill" [ngClass]="user.status.toLowerCase()">
                 <span class="status-dot"></span>
@@ -192,29 +198,10 @@
               </span>
             </td>
 
-            <!-- Actions -->
             <td style="text-align: right;">
-              <button
-                class="btn-action"
-                (click)="toggleStatus(user)"
-                [title]="user.status === 'ACTIVE' ? 'Suspend Account' : 'Reactivate Account'"
-              >
+              <button class="btn-action" (click)="toggleUserStatus(user)">
                 {{ user.status === 'ACTIVE' ? 'Suspend' : 'Activate' }}
               </button>
-            </td>
-          </tr>
-
-          <tr *ngIf="filteredUsers.length === 0 && !loading">
-            <td colspan="7" class="empty-state">
-              <div class="empty-state-content">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="8" x2="12" y2="12"></line>
-                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                </svg>
-                <div style="font-weight: 700; color: #1e293b; margin-top: 8px;">No Showroom Staff Found</div>
-                <div style="font-size: 13px; color: #64748b;">Try adjusting your search criteria or territory filters.</div>
-              </div>
             </td>
           </tr>
         </tbody>
@@ -222,60 +209,342 @@
     </div>
   </div>
 
-  <!-- Provision Modal -->
-  <div class="modal-backdrop" *ngIf="isModalOpen" (click)="closeModal()">
+  <!-- ========================================== -->
+  <!-- TAB 2: SHOWROOM LOCATIONS                 -->
+  <!-- ========================================== -->
+  <div class="table-card" *ngIf="activeTab === 'locations'">
+    <div class="toolbar">
+      <div>
+        <div style="font-weight: 800; font-size: 15px; color: #0f172a;">Customer Dealerships & Showroom Facilities</div>
+        <div style="font-size: 12px; color: #64748b;">Physical locations registered under customer enterprise accounts</div>
+      </div>
+      <div class="filter-controls">
+        <select [(ngModel)]="selectedRealm" (change)="applyLocationFilters()" class="form-select">
+          <option value="all">All Customer Tenants</option>
+          <option *ngFor="let r of realms" [value]="r.realmCode">{{ r.organizationName }}</option>
+        </select>
+        <button class="btn-luxury" (click)="openLocationModal()">+ Add New Branch</button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="luxury-table">
+        <thead>
+          <tr>
+            <th>Branch Code</th>
+            <th>Showroom Facility Name</th>
+            <th>Customer Tenant</th>
+            <th>City & Country</th>
+            <th>Address</th>
+            <th>Branch Head / Manager</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let loc of filteredLocations">
+            <td>
+              <strong style="color: #0284c7; font-family: monospace; font-size: 14px;">{{ loc.locationCode }}</strong>
+            </td>
+            <td>
+              <div style="font-weight: 700; color: #0f172a;">{{ loc.locationName }}</div>
+              <div style="font-size: 11px; color: #64748b;">Phone: {{ loc.phoneNumber || '—' }}</div>
+            </td>
+            <td>
+              <span class="realm-tag">{{ loc.realmCode }}</span>
+            </td>
+            <td>
+              <div style="font-weight: 600;">{{ loc.city }}, {{ loc.stateProvince || '' }}</div>
+              <div style="font-size: 11px; color: #64748b;">{{ loc.country }}</div>
+            </td>
+            <td style="max-width: 240px; font-size: 12.5px; color: #475569;">
+              {{ loc.address }}
+            </td>
+            <td>
+              <div style="font-size: 13px; font-weight: 600; color: #0284c7;">{{ loc.managerEmail }}</div>
+            </td>
+            <td>
+              <span class="status-pill active">
+                <span class="status-dot"></span>
+                {{ loc.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TAB 3: DYNAMIC ROLES & PERMISSIONS        -->
+  <!-- ========================================== -->
+  <div class="table-card" *ngIf="activeTab === 'roles'">
+    <div class="toolbar">
+      <div>
+        <div style="font-weight: 800; font-size: 15px; color: #0f172a;">Dynamic Showroom Roles & RBAC Matrix</div>
+        <div style="font-size: 12px; color: #64748b;">Custom roles scoped to specific dealership branches or across the whole tenant</div>
+      </div>
+      <div class="filter-controls">
+        <select [(ngModel)]="selectedRealm" (change)="applyRoleFilters()" class="form-select">
+          <option value="all">All Customer Tenants</option>
+          <option *ngFor="let r of realms" [value]="r.realmCode">{{ r.organizationName }}</option>
+        </select>
+        <button class="btn-luxury" (click)="openRoleModal()" style="background: linear-gradient(135deg, #9333ea, #7e22ce);">
+          + Create Custom Dynamic Role
+        </button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="luxury-table">
+        <thead>
+          <tr>
+            <th>Role Name & Code</th>
+            <th>Customer Tenant</th>
+            <th>Location Scope</th>
+            <th>Permissions Granted</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of filteredRoles">
+            <td>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div [style.background]="role.colorCode || '#0284c7'" style="width: 10px; height: 10px; border-radius: 50%;"></div>
+                <div>
+                  <div style="font-weight: 800; color: #0f172a;">{{ role.roleName }}</div>
+                  <div style="font-size: 11px; font-family: monospace; color: #64748b;">{{ role.roleCode }}</div>
+                </div>
+              </div>
+              <div style="font-size: 12px; color: #64748b; margin-top: 4px; max-width: 320px;">
+                {{ role.description }}
+              </div>
+            </td>
+
+            <td>
+              <span class="realm-tag">{{ role.realmCode }}</span>
+            </td>
+
+            <td>
+              <span class="role-badge" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1;">
+                {{ role.locationScope === 'ALL' ? '🌐 All Locations' : '📍 Branch: ' + role.locationScope }}
+              </span>
+            </td>
+
+            <td>
+              <div style="display: flex; flex-wrap: wrap; gap: 4px; max-width: 440px;">
+                <span *ngFor="let perm of role.permissionsList" style="font-size: 10px; font-weight: 700; background: #f8fafc; border: 1px solid #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 4px;">
+                  {{ perm }}
+                </span>
+              </div>
+            </td>
+
+            <td>
+              <span *ngIf="role.isSystemRole" style="font-size: 11px; font-weight: 800; color: #64748b; background: #f1f5f9; padding: 3px 8px; border-radius: 4px;">
+                System Core
+              </span>
+              <span *ngIf="!role.isSystemRole" style="font-size: 11px; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 3px 8px; border-radius: 4px; border: 1px solid #bae6fd;">
+                Dynamic Custom
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 1: PROVISION STAFF                  -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" *ngIf="isUserModalOpen" (click)="closeUserModal()">
     <div class="modal-dialog" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <div>
-          <h3 class="modal-title">Provision Showroom Staff Member</h3>
-          <p class="modal-subtitle">Assign security role, showroom territory, and flagship allocation.</p>
+          <h3 class="modal-title">Provision Showroom Staff</h3>
+          <p class="modal-subtitle">Assign security role and dealership location.</p>
         </div>
-        <button class="btn-close" (click)="closeModal()">&times;</button>
+        <button class="btn-close" (click)="closeUserModal()">&times;</button>
       </div>
 
       <div class="modal-body">
         <div class="form-group">
           <label class="form-label">Full Name *</label>
-          <input type="text" [(ngModel)]="newUser.fullName" placeholder="e.g. Julian Vance" class="form-control" />
+          <input type="text" [(ngModel)]="newUser.fullName" placeholder="e.g. Rahul Sharma" class="form-control" />
         </div>
 
         <div class="form-group">
-          <label class="form-label">Corporate Email *</label>
-          <input type="email" [(ngModel)]="newUser.email" placeholder="julian.vance@americas.dhadiya.com" class="form-control" />
+          <label class="form-label">Work Email *</label>
+          <input type="email" [(ngModel)]="newUser.email" placeholder="rahul.s@tvs.dhadiya.com" class="form-control" />
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Showroom Territory *</label>
-            <select [(ngModel)]="newUser.realmCode" class="form-select">
+            <label class="form-label">Showroom Branch / Location *</label>
+            <select [ngModel]="newUser.locationCode" (ngModelChange)="onUserLocationSelect($event)" class="form-select">
+              <option *ngFor="let loc of locations" [value]="loc.locationCode">
+                {{ loc.locationName }} ({{ loc.locationCode }})
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Dynamic Role *</label>
+            <select [(ngModel)]="newUser.role" class="form-select">
+              <option *ngFor="let r of roles" [value]="r.roleCode">{{ r.roleName }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Contact</label>
+          <input type="text" [(ngModel)]="newUser.phoneNumber" placeholder="+91 80 4123 0000" class="form-control" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeUserModal()">Cancel</button>
+        <button class="btn-luxury" (click)="submitNewUser()">Provision Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 2: ADD LOCATION / BRANCH            -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" *ngIf="isLocationModalOpen" (click)="closeLocationModal()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Add Showroom Dealership Branch</h3>
+          <p class="modal-subtitle">Register a physical facility under a customer tenant account.</p>
+        </div>
+        <button class="btn-close" (click)="closeLocationModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Customer Tenant *</label>
+            <select [(ngModel)]="newLocation.realmCode" class="form-select">
               <option *ngFor="let r of realms" [value]="r.realmCode">{{ r.organizationName }}</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label class="form-label">Role & Clearance *</label>
-            <select [(ngModel)]="newUser.role" class="form-select">
-              <option *ngFor="let role of roles" [value]="role.key">{{ role.label }}</option>
-            </select>
+            <label class="form-label">Location Code *</label>
+            <input type="text" [(ngModel)]="newLocation.locationCode" placeholder="e.g. TVS-HYD-01" class="form-control" />
           </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Branch / Showroom Facility Name *</label>
+          <input type="text" [(ngModel)]="newLocation.locationName" placeholder="e.g. Hyderabad Jubilee Hills Flagship" class="form-control" />
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Flagship Location</label>
-            <input type="text" [(ngModel)]="newUser.showroomLocation" placeholder="e.g. London Mayfair Gallery" class="form-control" />
+            <label class="form-label">City *</label>
+            <input type="text" [(ngModel)]="newLocation.city" placeholder="Hyderabad" class="form-control" />
           </div>
+          <div class="form-group">
+            <label class="form-label">State / Province</label>
+            <input type="text" [(ngModel)]="newLocation.stateProvince" placeholder="Telangana" class="form-control" />
+          </div>
+        </div>
 
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <input type="text" [(ngModel)]="newLocation.address" placeholder="Road No. 36, Jubilee Hills" class="form-control" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Branch Manager Email</label>
+            <input type="email" [(ngModel)]="newLocation.managerEmail" placeholder="manager.hyd@tvs.dhadiya.com" class="form-control" />
+          </div>
           <div class="form-group">
             <label class="form-label">Phone Contact</label>
-            <input type="text" [(ngModel)]="newUser.phoneNumber" placeholder="+1 (310) 555-0100" class="form-control" />
+            <input type="text" [(ngModel)]="newLocation.phoneNumber" placeholder="+91 40 2345 6789" class="form-control" />
           </div>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn-secondary" (click)="closeModal()">Cancel</button>
-        <button class="btn-luxury" (click)="submitNewUser()">Provision Account</button>
+        <button class="btn-secondary" (click)="closeLocationModal()">Cancel</button>
+        <button class="btn-luxury" (click)="submitNewLocation()">Save Showroom Branch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 3: CREATE DYNAMIC ROLE              -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" *ngIf="isRoleModalOpen" (click)="closeRoleModal()">
+    <div class="modal-dialog" style="max-width: 650px;" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Create Custom Dynamic Role</h3>
+          <p class="modal-subtitle">Define role code, location scoping, and granular permissions.</p>
+        </div>
+        <button class="btn-close" (click)="closeRoleModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Customer Tenant *</label>
+            <select [(ngModel)]="newRole.realmCode" class="form-select">
+              <option *ngFor="let r of realms" [value]="r.realmCode">{{ r.organizationName }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Role Code * (UPPERCASE)</label>
+            <input type="text" [(ngModel)]="newRole.roleCode" placeholder="e.g. EV_BATTERY_TECH" class="form-control" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Role Display Name *</label>
+            <input type="text" [(ngModel)]="newRole.roleName" placeholder="e.g. EV High-Voltage Specialist" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Location Scope</label>
+            <select [(ngModel)]="newRole.locationScope" class="form-select">
+              <option value="ALL">🌐 All Locations under Tenant</option>
+              <option *ngFor="let loc of locations" [value]="loc.locationCode">
+                📍 Specific: {{ loc.locationName }} ({{ loc.locationCode }})
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <input type="text" [(ngModel)]="newRole.description" placeholder="Summarize role duties and clearances..." class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Granular Security Permissions *</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 180px; overflow-y: auto; border: 1px solid #cbd5e1; padding: 10px; border-radius: 8px;">
+            <label *ngFor="let perm of availablePermissions" style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; cursor: pointer;">
+              <input
+                type="checkbox"
+                [checked]="isPermissionSelected(perm.key)"
+                (change)="togglePermission(perm.key)"
+              />
+              <span>{{ perm.label }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeRoleModal()">Cancel</button>
+        <button class="btn-luxury" (click)="submitNewRole()" style="background: linear-gradient(135deg, #9333ea, #7e22ce);">
+          Create Dynamic Role
+        </button>
       </div>
     </div>
   </div>
