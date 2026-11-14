@@ -299,7 +299,7 @@ public class DataInitializer implements CommandLineRunner {
                     .status("PUBLISHED")
                     .build());
 
-            instanceRepository.save(ProcessInstance.builder()
+            ProcessInstance inst = instanceRepository.save(ProcessInstance.builder()
                     .trackingNumber("DHADIYA-2026-001")
                     .realmCode("dhadiya-showroom-americas")
                     .processKey("WF_SHOWROOM_DELIVERY_HANDOVER")
@@ -310,6 +310,7 @@ public class DataInitializer implements CommandLineRunner {
                     .build());
 
             taskRepository.save(ProcessTask.builder()
+                    .instanceId(inst.getId())
                     .trackingNumber("DHADIYA-2026-001")
                     .stageName("TECHNICAL_PDI")
                     .title("Perform 120-Point PDI & Diagnostics for Porsche 911 GT3 RS (DHADIYA-2026-001)")
