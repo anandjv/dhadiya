@@ -1,61 +1,61 @@
 {
   "/api/v1/realms": {
-    "target": "http://localhost:8081",
+    "target": "http://127.0.0.1:8081",
     "secure": false,
     "changeOrigin": true
   },
   "/api/v1/processes": {
-    "target": "http://localhost:8082",
+    "target": "http://127.0.0.1:8082",
     "secure": false,
     "changeOrigin": true
   },
   "/api/v1/forms": {
-    "target": "http://localhost:8082",
+    "target": "http://127.0.0.1:8082",
     "secure": false,
     "changeOrigin": true
   },
   "/api/v1/tasks": {
-    "target": "http://localhost:8082",
+    "target": "http://127.0.0.1:8082",
     "secure": false,
     "changeOrigin": true
   },
   "/api/v1/schemas": {
-    "target": "http://localhost:8082",
+    "target": "http://127.0.0.1:8082",
     "secure": false,
     "changeOrigin": true
   },
   "/api/v1/grid": {
-    "target": "http://localhost:8082",
+    "target": "http://127.0.0.1:8082",
     "secure": false,
     "changeOrigin": true
   },
   "/dynamicGrid": {
-    "target": "http://localhost:8082",
+    "target": "http://127.0.0.1:8082",
     "secure": false,
     "changeOrigin": true
   },
   "/api/v1/engine": {
-    "target": "http://localhost:8082",
+    "target": "http://127.0.0.1:8082",
     "secure": false,
     "changeOrigin": true
   },
   "/api/v1/dynamic-forms": {
-    "target": "http://localhost:8082",
+    "target": "http://127.0.0.1:8082",
     "secure": false,
     "changeOrigin": true
   },
   "/workflow": {
-    "target": "http://localhost:8082",
+    "target": "http://127.0.0.1:8082",
     "secure": false,
     "changeOrigin": true
   },
   "/workflowTrackMaster": {
-    "target": "http://localhost:8082",
+    "target": "http://127.0.0.1:8082",
     "secure": false,
     "changeOrigin": true
   },
   "/formMaster": {
-    "target": "http://localhost:8082",
+    "target": "http://127.0.0.1:8082",
     "secure": false,
     "changeOrigin": true
   }
