@@ -29,10 +29,25 @@ public class ProcessDefinition {
     @Column(nullable = false, length = 128)
     private String name;
 
+    @Column(length = 100)
+    private String category;
+
+    @Column(length = 60)
+    private String industryType;
+
     @Column(length = 255)
     private String description;
 
     private Integer version;
+
+    @Column(length = 120)
+    private String tableName;
+
+    @Column(columnDefinition = "TEXT")
+    private String tableSchemaJson;
+
+    @Column(length = 120)
+    private String workflowCode;
 
     @Column(columnDefinition = "TEXT")
     private String stagesJson;

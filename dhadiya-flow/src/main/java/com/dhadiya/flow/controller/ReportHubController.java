@@ -14,7 +14,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/reports")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Tag(name = "Executive Intelligence & Report Hub", description = "Dynamic Reports, Analytics Dashboards & KPI Aggregations")
 public class ReportHubController {
 

@@ -1,0 +1,8 @@
+.DS_Store
+*.log
+servers.json
+target/
+node_modules/
+dist/
+.idea/
+*.class

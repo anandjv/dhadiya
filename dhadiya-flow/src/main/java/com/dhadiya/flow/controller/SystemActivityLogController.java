@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/activity-logs")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Tag(name = "System Activity & Audit Trail", description = "Immutable audit log of user actions and state transitions")
 public class SystemActivityLogController {
 
