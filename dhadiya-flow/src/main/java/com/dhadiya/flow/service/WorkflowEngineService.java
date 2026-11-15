@@ -41,9 +41,48 @@ public class WorkflowEngineService {
                 .orElseThrow(() -> new IllegalArgumentException("Workflow not found: " + workflowCode));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public WorkflowMaster saveWorkflow(WorkflowMaster workflow) {
         return workflowRepository.save(workflow);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, Object> getKanbanBoard(String workflowCode, String realmCode) {
+        WorkflowMaster wf = (workflowCode != null && !workflowCode.isBlank())
+                ? workflowRepository.findByWorkflowCode(workflowCode).orElseGet(() -> workflowRepository.findAll().stream().findFirst().orElse(null))
+                : workflowRepository.findAll().stream().findFirst().orElse(null);
+        if (wf == null) return Collections.emptyMap();
+
+        List<WorkflowTrackMaster> cases = (realmCode != null && !realmCode.isBlank())
+                ? trackMasterRepository.findByRealmCodeAndWorkflowCode(realmCode, wf.getWorkflowCode())
+                : trackMasterRepository.findAll().stream()
+                    .filter(c -> wf.getWorkflowCode().equals(c.getWorkflowCode()))
+                    .collect(Collectors.toList());
+
+        List<Map<String, Object>> columns = new ArrayList<>();
+        List<WorkflowStage> stages = wf.getStages().stream()
+                .sorted(Comparator.comparingInt(WorkflowStage::getStageOrder))
+                .collect(Collectors.toList());
+
+        for (WorkflowStage stage : stages) {
+            Map<String, Object> col = new LinkedHashMap<>();
+            col.put("stageCode", stage.getStageCode());
+            col.put("stageName", stage.getStageName());
+            col.put("stageOrder", stage.getStageOrder());
+            col.put("colorCode", stage.getStageColor());
+            List<WorkflowTrackMaster> colCases = cases.stream()
+                    .filter(c -> stage.getStageCode().equalsIgnoreCase(c.getCurrentStageCode()))
+                    .collect(Collectors.toList());
+            col.put("cases", colCases);
+            col.put("count", colCases.size());
+            columns.add(col);
+        }
+
+        Map<String, Object> board = new LinkedHashMap<>();
+        board.put("workflowCode", wf.getWorkflowCode());
+        board.put("workflowName", wf.getWorkflowName());
+        board.put("columns", columns);
+        return board;
     }
 
     @Transactional

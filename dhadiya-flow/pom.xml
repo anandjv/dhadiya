@@ -19,6 +19,7 @@
         <java.version>25</java.version>
         <springdoc.version>2.10.0</springdoc.version>
         <lombok.version>1.18.48</lombok.version>
+        <postgresql.version>42.7.12</postgresql.version>
     </properties>
 
     <dependencies>
@@ -53,6 +54,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
             <scope>runtime</scope>
         </dependency>
 

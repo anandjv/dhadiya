@@ -83,12 +83,20 @@ public class WorkflowEngineController {
 
     // --- Task Queues ---
 
-    @GetMapping("/api/v1/engine/tasks/pending")
+    @GetMapping({"/api/v1/engine/tasks/pending", "/api/v1/tasks/pending"})
     @Operation(summary = "Get pending approval tasks for user or role")
     public ResponseEntity<List<WorkflowTaskItem>> getPendingTasks(
             @RequestParam(required = false) String assignedTo,
             @RequestParam(required = false) String roleName) {
         return ResponseEntity.ok(engineService.getPendingTasks(assignedTo, roleName));
+    }
+
+    @GetMapping({"/api/v1/engine/kanban", "/api/v1/tasks/kanban"})
+    @Operation(summary = "Get Kanban board columns with case cards")
+    public ResponseEntity<java.util.Map<String, Object>> getKanbanBoard(
+            @RequestParam(required = false, defaultValue = "WF_SHOWROOM_DELIVERY_HANDOVER") String workflowCode,
+            @RequestParam(required = false) String realmCode) {
+        return ResponseEntity.ok(engineService.getKanbanBoard(workflowCode, realmCode));
     }
 
     @PostMapping("/api/v1/engine/tasks/{taskId}/complete")

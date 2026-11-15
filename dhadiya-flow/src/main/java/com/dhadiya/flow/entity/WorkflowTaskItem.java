@@ -33,6 +33,10 @@ public class WorkflowTaskItem {
     private String assignedTo;
     private String roleName;
 
+    @Column(length = 30)
+    @Builder.Default
+    private String priority = "NORMAL"; // URGENT, HIGH, NORMAL, LOW
+
     @Column(nullable = false, length = 50)
     @Builder.Default
     private String status = "PENDING"; // PENDING, COMPLETED, OVERDUE
