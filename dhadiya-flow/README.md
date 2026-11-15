@@ -53,3 +53,10 @@
 - **Swagger UI:** `http://localhost:8082/swagger-ui.html`
 - **Health Check:** `http://localhost:8082/actuator/health`
 - **H2 Console:** `http://localhost:8082/h2-console`
+
+## ⚙️ Runtime & Technology Stack
+- **Application:** `dhadiya-flow`
+- **Spring Boot:** `3.5.x`
+- **Java:** `25`
+- **Spring Data JPA**
+- **Databases:** H2 (dev) & PostgreSQL (prod)
