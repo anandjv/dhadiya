@@ -8,9 +8,9 @@ The **Dhadiya Global Showroom Management Platform** is a 3-tier enterprise cloud
 
 | Tier | Project Name | Technology Stack | Port | Responsibilities & Domain |
 |---|---|---|---|---|
-| **Frontend** | [**`dhadiya-portal`**](file:///Users/apple/zora/dhadiya/dhadiya-portal) | Angular 18+, TypeScript, Plus Jakarta Sans | **4200** | Unified Showroom Web Console: **Zora Studio** (Create Tables, Dynamic Forms, Workflows), Region Management, Task Inbox, Inventory DataGrids |
-| **Territory Isolation** | [**`dhadiya-tenants`**](file:///Users/apple/zora/dhadiya/dhadiya-tenants) | Spring Boot 3.2, JPA, H2 / PostgreSQL | **8081** | Multi-Tenant Showroom Realm Isolation API (`showrooms.dhadiya.com`) |
-| **Unified Middleware** | [**`dhadiya-flow`**](file:///Users/apple/zora/dhadiya/dhadiya-flow) | Spring Boot 3.2, JPA, H2 / PostgreSQL | **8082** | **Unified Middleware Engine:** Integrates **eFormsPi Core Workflow Engine**, Dynamic Multi-Section Forms, and Floor Inventory DataGrids |
+| **Frontend** | [**`dhadiya-portal`**](file:///Users/apple/zora/dhaadiya/dhadiya-portal) | Angular 18+, TypeScript, Plus Jakarta Sans | **4200** | Unified Showroom Web Console: **Zora Studio** (Create Tables, Dynamic Forms, Workflows), Region Management, Task Inbox, Inventory DataGrids |
+| **Territory Isolation** | [**`dhadiya-tenants`**](file:///Users/apple/zora/dhaadiya/dhadiya-tenants) | Spring Boot 3.5, Java 25, JPA, H2 / PostgreSQL | **8081** | Multi-Tenant Showroom Realm Isolation API (`showrooms.dhadiya.com`) |
+| **Unified Middleware** | [**`dhadiya-flow`**](file:///Users/apple/zora/dhaadiya/dhadiya-flow) | Spring Boot 3.5, Java 25, JPA, H2 / PostgreSQL | **8082** | **Unified Middleware Engine:** Integrates **eFormsPi Core Workflow Engine**, Dynamic Multi-Section Forms, and Floor Inventory DataGrids |
 
 ---
 

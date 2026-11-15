@@ -18,6 +18,11 @@
 # under the License.
 # ----------------------------------------------------------------------------
 
+if [ -z "$JAVA_HOME" ] || [ ! -d "$JAVA_HOME" ]; then
+  export JAVA_HOME="/Users/apple/.vscode/extensions/redhat.java-1.58.0-darwin-arm64/jre/25.0.4.1-macosx-aarch64"
+  export PATH="$JAVA_HOME/bin:$PATH"
+fi
+
 # ----------------------------------------------------------------------------
 # Maven2 Start Up Batch script
 #

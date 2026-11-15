@@ -14,7 +14,7 @@ On boot, `dhadiya-tenants` automatically initializes with real enterprise tenant
 ## Features
 - Tenant realm provisioning, activation, suspension, and domain mapping
 - Dynamic JSON settings storage for tenant customization
-- Spring Boot 3.2.x, Spring Data JPA, H2 (dev) & PostgreSQL (prod)
+- Spring Boot 3.5.x, Java 25, Spring Data JPA, H2 (dev) & PostgreSQL (prod)
 - Interactive Swagger / OpenAPI documentation
 - Actuator health metrics
 

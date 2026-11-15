@@ -102,6 +102,7 @@ export interface WorkflowTaskItem {
   taskTitle: string;
   assignedTo?: string;
   roleName?: string;
+  priority?: string;
   status: 'PENDING' | 'COMPLETED' | 'OVERDUE';
   createdAt?: string;
   slaDueDate?: string;

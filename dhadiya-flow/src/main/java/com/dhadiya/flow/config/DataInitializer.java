@@ -30,12 +30,87 @@ public class DataInitializer implements CommandLineRunner {
     private final WorkflowTrackDetRepository trackDetRepository;
     private final WorkflowTaskItemRepository taskItemRepository;
     private final FormMasterRepository formMasterRepository;
+    private final ReportDefinitionRepository reportDefinitionRepository;
+    private final SystemActivityLogRepository activityLogRepository;
 
     @Override
     public void run(String... args) {
         initLegacyCompatibility();
         initCoreWorkflowEngine();
         initCoreDynamicForms();
+        initReportsAndLogs();
+    }
+
+    private void initReportsAndLogs() {
+        if (reportDefinitionRepository.count() == 0) {
+            log.info("Initializing Executive Reports and System Activity Logs...");
+
+            reportDefinitionRepository.saveAll(List.of(
+                    ReportDefinition.builder()
+                            .realmCode("dhadiya-showroom-global")
+                            .reportKey("REP_PDI_CYCLE_TIMES")
+                            .reportName("Global Vehicle PDI & Delivery Cycle Times")
+                            .category("Operations")
+                            .chartType("BAR")
+                            .description("Average lead time across Intake, Diagnostics, Detailing, and Handover stages")
+                            .isPublic(true)
+                            .createdAt(LocalDateTime.now())
+                            .build(),
+                    ReportDefinition.builder()
+                            .realmCode("dhadiya-showroom-global")
+                            .reportKey("REP_INVENTORY_VALUATION")
+                            .reportName("Floor Inventory Valuation & Allocation by Territory")
+                            .category("Financial")
+                            .chartType("DOUGHNUT")
+                            .description("Total showroom vehicle value distributed across Americas, EMEA, and APAC")
+                            .isPublic(true)
+                            .createdAt(LocalDateTime.now())
+                            .build(),
+                    ReportDefinition.builder()
+                            .realmCode("dhadiya-showroom-global")
+                            .reportKey("REP_TASK_SLA_COMPLIANCE")
+                            .reportName("Technician & Sales Executive Task SLA Performance")
+                            .category("Governance")
+                            .chartType("LINE")
+                            .description("Weekly SLA compliance rates for intake diagnostics and VIP delivery preparations")
+                            .isPublic(true)
+                            .createdAt(LocalDateTime.now())
+                            .build()
+            ));
+
+            activityLogRepository.saveAll(List.of(
+                    SystemActivityLog.builder()
+                            .realmCode("dhadiya-showroom-americas")
+                            .userEmail("chief.tech@americas.dhadiya.com")
+                            .actionType("WORKFLOW_TRANSITION")
+                            .entityType("WorkflowTrackMaster")
+                            .entityId("DHADIYA-2026-001")
+                            .summary("Advanced case DHADIYA-2026-001 from INTAKE_INSPECTION to TECHNICAL_PDI")
+                            .ipAddress("198.51.100.45")
+                            .timestamp(LocalDateTime.now().minusHours(2))
+                            .build(),
+                    SystemActivityLog.builder()
+                            .realmCode("dhadiya-showroom-emea")
+                            .userEmail("gm.mayfair@emea.dhadiya.com")
+                            .actionType("RECORD_INSERT")
+                            .entityType("DynamicGridRecord")
+                            .entityId("REC-102")
+                            .summary("Added Ferrari SF90 Stradale into dhadiya_showroom_inventory")
+                            .ipAddress("195.12.33.10")
+                            .timestamp(LocalDateTime.now().minusHours(5))
+                            .build(),
+                    SystemActivityLog.builder()
+                            .realmCode("dhadiya-showroom-apac")
+                            .userEmail("advisor.ginza@apac.dhadiya.com")
+                            .actionType("LOGIN")
+                            .entityType("TenantUser")
+                            .entityId("USR-301")
+                            .summary("Executive login from Tokyo Ginza Flagship terminal")
+                            .ipAddress("210.140.10.88")
+                            .timestamp(LocalDateTime.now().minusHours(8))
+                            .build()
+            ));
+        }
     }
 
     private void initCoreWorkflowEngine() {

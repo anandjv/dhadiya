@@ -1,47 +1,116 @@
-<div style="padding: 28px; max-width: 1300px; margin: 0 auto;">
-  
-  <!-- Studio Hero Header -->
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0;">
-    <div>
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="background: linear-gradient(135deg, #0284c7, #2563eb); color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 13px; letter-spacing: 0.5px;">ZORA STUDIO</span>
-        <h1 style="font-size: 26px; font-weight: 800; color: #0f172a; margin: 0;">Enterprise Application Studio</h1>
+<div style="padding: 24px; max-width: 1400px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+
+  <!-- ============================================================ -->
+  <!-- 1. TOP PROCESS ARCHITECTURE HEADER (Process-as-Container)    -->
+  <!-- ============================================================ -->
+  <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+      
+      <!-- Left: Title & Concept -->
+      <div style="max-width: 600px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+          <span style="background: linear-gradient(135deg, #0284c7, #2563eb); color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 11px; letter-spacing: 0.8px;">PROCESS STUDIO</span>
+          <span style="background: #f1f5f9; color: #475569; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">Dhadiya USMS Architecture</span>
+          <span style="background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px; font-family: monospace;">eFormsPi Tenant Scoped</span>
+        </div>
+        <h1 style="font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">
+          {{ currentProcess.name }}
+        </h1>
+        <p style="color: #64748b; font-size: 13px; margin: 0; line-height: 1.5;">
+          A unified container orchestrating <strong>Dynamic Virtual Tables</strong>, <strong>eFormsPi Dynamic Forms</strong>, and <strong>Multi-Stage Workflows</strong> with strict multi-tenant isolation.
+        </p>
       </div>
-      <p style="color: #64748b; font-size: 14px; margin-top: 4px;">Low-code builder for dynamic tables, multi-section eFormsPi forms, conditional rules, and multi-stage workflow engines in <strong>dhadiya-flow</strong>.</p>
+
+      <!-- Right: Tenant Realm & Industry Template Pickers -->
+      <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+        
+        <!-- Tenant Realm Selector -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label style="font-size: 12px; font-weight: 700; color: #475569;">Tenant Isolation Realm:</label>
+          <select [ngModel]="currentProcess.realmCode" (ngModelChange)="onRealmChange($event)"
+                  style="background: #f8fafc; border: 1.5px solid #0284c7; color: #0369a1; font-weight: 700; font-size: 12px; padding: 6px 12px; border-radius: 8px; outline: none; cursor: pointer;">
+            <option *ngFor="let r of realms" [value]="r">{{ r }}</option>
+          </select>
+        </div>
+
+        <!-- Industry Template Presets -->
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 11px; font-weight: 600; color: #94a3b8;">Industry Presets:</span>
+          <button (click)="loadIndustryProcess('AUTOMOBILE')" 
+                  [style.background]="currentProcess.industryType === 'AUTOMOBILE' ? '#e0f2fe' : '#f8fafc'"
+                  [style.borderColor]="currentProcess.industryType === 'AUTOMOBILE' ? '#0284c7' : '#cbd5e1'"
+                  [style.color]="currentProcess.industryType === 'AUTOMOBILE' ? '#0369a1' : '#475569'"
+                  style="padding: 5px 10px; border: 1px solid; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
+            🏎️ Automobile
+          </button>
+          <button (click)="loadIndustryProcess('JEWELLERY')" 
+                  [style.background]="currentProcess.industryType === 'JEWELLERY' ? '#fef3c7' : '#f8fafc'"
+                  [style.borderColor]="currentProcess.industryType === 'JEWELLERY' ? '#f59e0b' : '#cbd5e1'"
+                  [style.color]="currentProcess.industryType === 'JEWELLERY' ? '#b45309' : '#475569'"
+                  style="padding: 5px 10px; border: 1px solid; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
+            💎 Jewellery
+          </button>
+          <button (click)="loadIndustryProcess('ELECTRONICS')" 
+                  [style.background]="currentProcess.industryType === 'ELECTRONICS' ? '#dcfce7' : '#f8fafc'"
+                  [style.borderColor]="currentProcess.industryType === 'ELECTRONICS' ? '#10b981' : '#cbd5e1'"
+                  [style.color]="currentProcess.industryType === 'ELECTRONICS' ? '#065f46' : '#475569'"
+                  style="padding: 5px 10px; border: 1px solid; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
+            📱 Electronics / Mobile
+          </button>
+        </div>
+
+        <!-- Master Process Deploy Button -->
+        <button (click)="saveEntireProcessBundle()" [disabled]="isDeployingProcess"
+                style="background: linear-gradient(135deg, #059669, #10b981); color: white; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.25);">
+          <span *ngIf="!isDeployingProcess">⚡ Save & Deploy Entire Process to Tenant</span>
+          <span *ngIf="isDeployingProcess">⏳ Deploying Process Definition...</span>
+        </button>
+
+      </div>
     </div>
 
-    <!-- Mode Selector Tabs -->
-    <div style="display: flex; background: #f1f5f9; padding: 4px; border-radius: 8px; gap: 4px;">
-      <button (click)="activeTab = 'tables'" 
-              [style.background]="activeTab === 'tables' ? 'white' : 'transparent'"
-              [style.color]="activeTab === 'tables' ? '#0284c7' : '#64748b'"
-              [style.boxShadow]="activeTab === 'tables' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
-              style="padding: 8px 16px; border: none; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s;">
-        📊 Table Studio
+    <!-- Sub-navigation Tabs -->
+    <div style="display: flex; gap: 8px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #f1f5f9; overflow-x: auto;">
+      <button (click)="activeTab = 'process'"
+              [style.background]="activeTab === 'process' ? '#0f172a' : '#f8fafc'"
+              [style.color]="activeTab === 'process' ? 'white' : '#64748b'"
+              style="padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer;">
+        📋 1. Process Container
       </button>
 
-      <button (click)="activeTab = 'forms'" 
-              [style.background]="activeTab === 'forms' ? 'white' : 'transparent'"
-              [style.color]="activeTab === 'forms' ? '#0284c7' : '#64748b'"
-              [style.boxShadow]="activeTab === 'forms' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
-              style="padding: 8px 16px; border: none; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s;">
-        📝 Dynamic Forms
+      <button (click)="activeTab = 'tables'"
+              [style.background]="activeTab === 'tables' ? '#0284c7' : '#f8fafc'"
+              [style.color]="activeTab === 'tables' ? 'white' : '#64748b'"
+              style="padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer;">
+        📊 2. Dynamic Table ({{ tableColumns.length }} Cols)
       </button>
 
-      <button (click)="activeTab = 'workflows'" 
-              [style.background]="activeTab === 'workflows' ? 'white' : 'transparent'"
-              [style.color]="activeTab === 'workflows' ? '#0284c7' : '#64748b'"
-              [style.boxShadow]="activeTab === 'workflows' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
-              style="padding: 8px 16px; border: none; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s;">
-        🔄 Workflow Designer
+      <button (click)="activeTab = 'forms'"
+              [style.background]="activeTab === 'forms' ? '#8b5cf6' : '#f8fafc'"
+              [style.color]="activeTab === 'forms' ? 'white' : '#64748b'"
+              style="padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer;">
+        📝 3. Dynamic Form ({{ newFormMaster.sections?.length || 0 }} Sections)
       </button>
 
-      <button (click)="activeTab = 'explorer'" 
-              [style.background]="activeTab === 'explorer' ? 'white' : 'transparent'"
-              [style.color]="activeTab === 'explorer' ? '#0284c7' : '#64748b'"
-              [style.boxShadow]="activeTab === 'explorer' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
-              style="padding: 8px 16px; border: none; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s;">
-        🗂️ Studio Assets
+      <button (click)="activeTab = 'workflows'"
+              [style.background]="activeTab === 'workflows' ? '#f59e0b' : '#f8fafc'"
+              [style.color]="activeTab === 'workflows' ? 'white' : '#64748b'"
+              style="padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer;">
+        🔄 4. Workflow Lifecycle ({{ newWorkflowMaster.stages?.length || 0 }} Stages)
+      </button>
+
+      <button (click)="activeTab = 'testrunner'"
+              [style.background]="activeTab === 'testrunner' ? '#10b981' : '#f8fafc'"
+              [style.color]="activeTab === 'testrunner' ? 'white' : '#64748b'"
+              style="padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer;">
+        🚀 5. Live Test Runner
+      </button>
+
+      <button (click)="activeTab = 'explorer'"
+              [style.background]="activeTab === 'explorer' ? '#475569' : '#f8fafc'"
+              [style.color]="activeTab === 'explorer' ? 'white' : '#64748b'"
+              style="padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer;">
+        🗂️ 6. Tenant Asset Explorer
       </button>
     </div>
   </div>
@@ -51,373 +120,491 @@
        [style.background]="notificationType === 'success' ? '#ecfdf5' : '#fef2f2'"
        [style.borderColor]="notificationType === 'success' ? '#a7f3d0' : '#fecaca'"
        [style.color]="notificationType === 'success' ? '#065f46' : '#991b1b'"
-       style="padding: 12px 18px; border-radius: 8px; border: 1px solid; margin-bottom: 20px; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: space-between;">
+       style="padding: 12px 18px; border-radius: 8px; border: 1px solid; margin-bottom: 20px; font-weight: 600; font-size: 13px; display: flex; align-items: center; justify-content: space-between;">
     <span>{{ notificationMessage }}</span>
-    <button (click)="notificationMessage = ''" style="background: none; border: none; font-size: 16px; cursor: pointer;">&times;</button>
+    <button (click)="notificationMessage = ''" style="background: none; border: none; font-size: 16px; cursor: pointer; color: inherit;">&times;</button>
   </div>
 
-  <!-- ========================================== -->
-  <!-- TAB 1: TABLE STUDIO (Create Tables)       -->
-  <!-- ========================================== -->
-  <div *ngIf="activeTab === 'tables'">
+  <!-- ============================================================ -->
+  <!-- TAB 1: PROCESS CONTAINER OVERVIEW                            -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeTab === 'process'">
     <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px;">
       
-      <!-- Table Builder Form -->
-      <div class="card" style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
-          <div>
-            <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0;">Dynamic Table Schema Modeler</h2>
-            <p style="font-size: 13px; color: #64748b; margin-top: 4px;">Configure table catalog parameters and column schemas.</p>
-          </div>
-          <div style="display: flex; gap: 6px;">
-            <button (click)="loadTableTemplate('inventory')" style="padding: 6px 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Preset: Floor Inventory</button>
-            <button (click)="loadTableTemplate('vip_orders')" style="padding: 6px 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Preset: VIP Orders</button>
-          </div>
-        </div>
+      <!-- Process Definition Parameters -->
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+        <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">Unified Process Parameters</h2>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 18px 0;">
+          All Virtual Tables, Forms, and Workflow Stages belong inside this Process container.
+        </p>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Target Realm:</label>
-            <select [(ngModel)]="newTable.realmCode" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px;">
-              <option *ngFor="let r of realms" [value]="r">{{ r }}</option>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Process Key (Unique Identifier):</label>
+            <input type="text" [(ngModel)]="currentProcess.processKey" 
+                   style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 13px; font-weight: 700; color: #0284c7; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Industry Type:</label>
+            <select [(ngModel)]="currentProcess.industryType"
+                    style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-weight: 600; box-sizing: border-box;">
+              <option value="AUTOMOBILE">Automobile Showrooms</option>
+              <option value="JEWELLERY">Jewellery Showrooms</option>
+              <option value="ELECTRONICS">Electronics & Mobile Showrooms</option>
+              <option value="FURNITURE">Furniture Showrooms</option>
+              <option value="TEXTILE">Textile & Clothing Showrooms</option>
+              <option value="APPLIANCES">Home Appliances Showrooms</option>
             </select>
           </div>
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Table System Key:</label>
-            <input type="text" [(ngModel)]="newTable.tableName" placeholder="e.g. dhadiya_records" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace;">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Process Display Name:</label>
+          <input type="text" [(ngModel)]="currentProcess.name" 
+                 style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; box-sizing: border-box;">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Category / Subsystem:</label>
+          <input type="text" [(ngModel)]="currentProcess.category" 
+                 style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; box-sizing: border-box;">
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Process Operational Description:</label>
+          <textarea [(ngModel)]="currentProcess.description" rows="3"
+                    style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; box-sizing: border-box;"></textarea>
+        </div>
+
+        <!-- Quick Summary of Bound Entities -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
+          <h4 style="font-size: 12px; font-weight: 800; color: #334155; margin: 0 0 8px 0; text-transform: uppercase;">Bundled Sub-Components Inside Process:</h4>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #64748b;">📊 Dynamic Backing Table:</span>
+              <code style="color: #0284c7; font-weight: 700;">{{ newTable.tableName }} ({{ tableColumns.length }} cols)</code>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #64748b;">📝 Dynamic eFormsPi Form:</span>
+              <code style="color: #8b5cf6; font-weight: 700;">{{ newFormMaster.formCode }} ({{ newFormMaster.sections?.length || 0 }} sections)</code>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #64748b;">🔄 Workflow Engine Pipeline:</span>
+              <code style="color: #f59e0b; font-weight: 700;">{{ newWorkflowMaster.workflowCode }} ({{ newWorkflowMaster.stages?.length || 0 }} stages)</code>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #64748b;">🔒 Multi-Tenant Realm Scoping:</span>
+              <code style="color: #059669; font-weight: 700;">{{ currentProcess.realmCode }}</code>
+            </div>
           </div>
         </div>
 
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Display Label:</label>
-          <input type="text" [(ngModel)]="newTable.label" placeholder="e.g. Safety Occurrence Register" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px;">
-        </div>
-
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Description & Notes:</label>
-          <textarea [(ngModel)]="newTable.description" rows="2" placeholder="Purpose and operational context of this table" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px;"></textarea>
-        </div>
-
-        <!-- Columns Builder -->
-        <div style="margin-bottom: 20px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <label style="font-size: 13px; font-weight: 700; color: #1e293b;">DataGrid Schema Fields ({{ tableColumns.length }})</label>
-            <button (click)="addColumn()" style="padding: 6px 12px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">+ Add Column</button>
-          </div>
-
-          <div style="max-height: 280px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
-            <table style="width: 100%; font-size: 13px;">
-              <thead style="background: #f8fafc;">
-                <tr>
-                  <th style="padding: 8px 10px;">Field Key</th>
-                  <th style="padding: 8px 10px;">Label</th>
-                  <th style="padding: 8px 10px;">Type</th>
-                  <th style="padding: 8px 10px; text-align: center;">Required</th>
-                  <th style="padding: 8px 10px;">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let col of tableColumns; let i = index">
-                  <td style="padding: 6px 10px;"><input type="text" [(ngModel)]="col.name" style="width: 100%; padding: 4px 8px; font-family: monospace; font-size: 12px;"></td>
-                  <td style="padding: 6px 10px;"><input type="text" [(ngModel)]="col.label" style="width: 100%; padding: 4px 8px; font-size: 12px;"></td>
-                  <td style="padding: 6px 10px;">
-                    <select [(ngModel)]="col.type" style="padding: 4px 8px; font-size: 12px;">
-                      <option value="text">text</option>
-                      <option value="number">number</option>
-                      <option value="date">date</option>
-                      <option value="select">select</option>
-                      <option value="boolean">boolean</option>
-                    </select>
-                  </td>
-                  <td style="padding: 6px 10px; text-align: center;">
-                    <input type="checkbox" [(ngModel)]="col.required">
-                  </td>
-                  <td style="padding: 6px 10px;">
-                    <button (click)="removeColumn(i)" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">✕</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <button (click)="saveTable()" class="btn-primary" style="width: 100%;">🚀 Deploy Dynamic Table to dhadiya-flow</button>
       </div>
 
-      <!-- Preview Schema JSON -->
-      <div class="card" style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px;">
-        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 12px;">Generated Schema Specification</h3>
-        <p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">Real-time JSON definition compiled for dhadiya-flow dynamic grid storage.</p>
-        <pre style="background: #0f172a; color: #38bdf8; padding: 16px; border-radius: 8px; font-size: 12px; overflow-x: auto; max-height: 480px;">{{ {
-  realmCode: newTable.realmCode,
-  gridKey: newTable.tableName,
-  gridName: newTable.label,
-  processKey: newTable.processKey,
-  columns: tableColumns
-} | json }}</pre>
+      <!-- Process Architecture Visual Diagram -->
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Process Architecture & Data Flow</h3>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">How dynamic tables, forms, and workflows interconnect inside this process.</p>
+
+        <!-- Visual Flow Pipeline -->
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          
+          <!-- Box 1: Process Root -->
+          <div style="background: #0f172a; color: white; border-radius: 10px; padding: 14px 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <span style="font-size: 11px; font-weight: 700; color: #38bdf8;">PROCESS ROOT CONTAINER</span>
+                <div style="font-size: 15px; font-weight: 800;">{{ currentProcess.name }}</div>
+              </div>
+              <span style="background: #1e293b; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-family: monospace;">{{ currentProcess.processKey }}</span>
+            </div>
+          </div>
+
+          <div style="text-align: center; color: #94a3b8; font-weight: 800; font-size: 16px;">↓ Orchestrates & Bundles ↓</div>
+
+          <!-- Box 2: Dynamic Form & Table -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            
+            <div style="background: #f5f3ff; border: 1.5px solid #c4b5fd; border-radius: 10px; padding: 14px;">
+              <span style="font-size: 11px; font-weight: 800; color: #7c3aed;">DYNAMIC FORM</span>
+              <div style="font-size: 13px; font-weight: 700; color: #4c1d95; margin-top: 4px;">{{ newFormMaster.formName }}</div>
+              <p style="font-size: 11px; color: #6d28d9; margin: 6px 0 0 0;">Collects verified showroom payloads with conditional rules.</p>
+            </div>
+
+            <div style="background: #f0f9ff; border: 1.5px solid #7dd3fc; border-radius: 10px; padding: 14px;">
+              <span style="font-size: 11px; font-weight: 800; color: #0284c7;">DYNAMIC TABLE</span>
+              <div style="font-size: 13px; font-weight: 700; color: #075985; margin-top: 4px;">{{ newTable.label }}</div>
+              <p style="font-size: 11px; color: #0369a1; margin: 6px 0 0 0;">Stores dynamic columns without physical SQL DDL alterations.</p>
+            </div>
+
+          </div>
+
+          <div style="text-align: center; color: #94a3b8; font-weight: 800; font-size: 16px;">↓ Synchronizes with Engine ↓</div>
+
+          <!-- Box 3: Workflow Engine -->
+          <div style="background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 10px; padding: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <span style="font-size: 11px; font-weight: 800; color: #d97706;">MULTI-STAGE WORKFLOW ENGINE</span>
+                <div style="font-size: 14px; font-weight: 700; color: #78350f; margin-top: 2px;">{{ newWorkflowMaster.workflowName }}</div>
+              </div>
+              <span style="background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">{{ newWorkflowMaster.stages?.length || 0 }} Stages</span>
+            </div>
+            <div style="display: flex; gap: 4px; margin-top: 10px; overflow-x: auto; padding-bottom: 4px;">
+              <span *ngFor="let s of newWorkflowMaster.stages; let idx = index" 
+                    [style.background]="s.stageColor || '#0284c7'"
+                    style="color: white; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; white-space: nowrap;">
+                {{ idx + 1 }}. {{ s.stageName }}
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top: 24px; text-align: center;">
+          <button (click)="activeTab = 'testrunner'"
+                  style="background: #0284c7; color: white; border: none; padding: 8px 18px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer;">
+            🚀 Test-Drive Live Case Execution ➔
+          </button>
+        </div>
+
       </div>
 
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- TAB 2: DYNAMIC FORMS (eFormsPi Engine)    -->
-  <!-- ========================================== -->
+  <!-- ============================================================ -->
+  <!-- TAB 2: DYNAMIC TABLE MODELER (Inside Process)                -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeTab === 'tables'">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+      
+      <!-- Table Schema Editor -->
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">Virtual Table Schema Modeler</h2>
+            <p style="font-size: 13px; color: #64748b; margin: 0;">Backing storage table scoped inside process <code>{{ currentProcess.processKey }}</code>.</p>
+          </div>
+          <button (click)="addColumn()" 
+                  style="background: #0284c7; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer;">
+            + Add Field
+          </button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Table Name (Storage Key):</label>
+            <input type="text" [(ngModel)]="newTable.tableName" 
+                   style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 13px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Table Display Label:</label>
+            <input type="text" [(ngModel)]="newTable.label" 
+                   style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; box-sizing: border-box;">
+          </div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Table Operational Purpose:</label>
+          <textarea [(ngModel)]="newTable.description" rows="2" 
+                    style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; box-sizing: border-box;"></textarea>
+        </div>
+
+        <!-- Columns Schema Table -->
+        <div style="max-height: 380px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; text-align: left;">
+              <tr>
+                <th style="padding: 8px 10px; color: #475569;">Column Key</th>
+                <th style="padding: 8px 10px; color: #475569;">Display Label</th>
+                <th style="padding: 8px 10px; color: #475569;">Type</th>
+                <th style="padding: 8px 10px; color: #475569;">Req</th>
+                <th style="padding: 8px 10px; color: #475569;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let col of tableColumns; let idx = index" style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 6px 10px;">
+                  <input type="text" [(ngModel)]="col.name" style="width: 100%; padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: monospace; font-size: 11px; box-sizing: border-box;">
+                </td>
+                <td style="padding: 6px 10px;">
+                  <input type="text" [(ngModel)]="col.label" style="width: 100%; padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; box-sizing: border-box;">
+                </td>
+                <td style="padding: 6px 10px;">
+                  <select [(ngModel)]="col.type" style="padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px;">
+                    <option value="text">text</option>
+                    <option value="number">number</option>
+                    <option value="select">select</option>
+                    <option value="date">date</option>
+                    <option value="currency">currency</option>
+                    <option value="boolean">boolean</option>
+                  </select>
+                </td>
+                <td style="padding: 6px 10px; text-align: center;">
+                  <input type="checkbox" [(ngModel)]="col.required">
+                </td>
+                <td style="padding: 6px 10px; text-align: center;">
+                  <button (click)="removeColumn(idx)" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">✕</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- Live Virtual Table Schema Preview -->
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Virtual DataGrid Preview</h3>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 16px 0;">
+          Dynamic rendering of columns in <strong>dhadiya-flow</strong> DataGrid catalog.
+        </p>
+
+        <div style="overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 20px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead style="background: #0284c7; color: white;">
+              <tr>
+                <th *ngFor="let col of tableColumns" style="padding: 8px 12px; text-align: left; font-weight: 700; white-space: nowrap;">
+                  {{ col.label }}
+                  <span style="font-size: 10px; opacity: 0.8; font-family: monospace;">({{ col.type }})</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background: #f8fafc;">
+                <td *ngFor="let col of tableColumns" style="padding: 10px 12px; color: #64748b; font-style: italic; border-bottom: 1px solid #e2e8f0; white-space: nowrap;">
+                  &lt;Sample {{ col.label }}&gt;
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
+          <h4 style="font-size: 12px; font-weight: 800; color: #334155; margin: 0 0 6px 0;">Generated Schema JSON:</h4>
+          <pre style="background: #0f172a; color: #38bdf8; padding: 12px; border-radius: 6px; font-size: 11px; max-height: 180px; overflow-y: auto; margin: 0;">{{ tableColumns | json }}</pre>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 3: DYNAMIC FORM DESIGNER (Inside Process)                -->
+  <!-- ============================================================ -->
   <div *ngIf="activeTab === 'forms'">
-    <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px;">
-
-      <!-- Form Master Builder -->
-      <div class="card" style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+    <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px;">
+      
+      <!-- Form Structure Modeler -->
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
           <div>
-            <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0;">eFormsPi Form Designer</h2>
-            <p style="font-size: 13px; color: #64748b; margin-top: 4px;">Construct multi-section forms, field components, and conditional business rules.</p>
+            <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">Dynamic eFormsPi Modeler</h2>
+            <p style="font-size: 13px; color: #64748b; margin: 0;">Multi-section form protocol bound inside process <code>{{ currentProcess.processKey }}</code>.</p>
           </div>
-          <span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 700;">FormMaster v{{ newFormMaster.version || 1 }}</span>
+          <button (click)="addSection()" 
+                  style="background: #8b5cf6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer;">
+            + Add Section
+          </button>
         </div>
 
-        <!-- Master Attributes -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Form Code Key:</label>
-            <input type="text" [(ngModel)]="newFormMaster.formCode" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace;">
+            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Form Code:</label>
+            <input type="text" [(ngModel)]="newFormMaster.formCode" 
+                   style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 13px; box-sizing: border-box;">
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Form Display Name:</label>
-            <input type="text" [(ngModel)]="newFormMaster.formName" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px;">
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Category:</label>
-            <input type="text" [(ngModel)]="newFormMaster.category" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px;">
-          </div>
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Linked Grid Table:</label>
-            <input type="text" [(ngModel)]="newFormMaster.tableName" placeholder="e.g. dhadiya_quality_audits" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace;">
+            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Form Name:</label>
+            <input type="text" [(ngModel)]="newFormMaster.formName" 
+                   style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; box-sizing: border-box;">
           </div>
         </div>
 
         <!-- Section Navigation Pills -->
-        <div style="margin-bottom: 16px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <label style="font-size: 13px; font-weight: 700; color: #1e293b;">Form Sections ({{ newFormMaster.sections?.length || 0 }})</label>
-            <button (click)="addSection()" style="padding: 4px 10px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">+ Add Section</button>
-          </div>
-          <div style="display: flex; gap: 8px; overflow-x: auto; padding: 4px 0;">
-            <button *ngFor="let sec of newFormMaster.sections; let sIdx = index" 
-                    (click)="selectedSectionIndex = sIdx"
-                    [style.background]="selectedSectionIndex === sIdx ? '#0284c7' : '#f1f5f9'"
-                    [style.color]="selectedSectionIndex === sIdx ? 'white' : '#475569'"
-                    style="border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;">
-              {{ sec.title }}
-            </button>
-          </div>
+        <div style="display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px;">
+          <button *ngFor="let sec of newFormMaster.sections; let sIdx = index"
+                  (click)="selectSection(sIdx)"
+                  [style.background]="selectedSectionIndex === sIdx ? '#8b5cf6' : '#f1f5f9'"
+                  [style.color]="selectedSectionIndex === sIdx ? 'white' : '#475569'"
+                  style="padding: 6px 12px; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;">
+            §{{ sIdx + 1 }}: {{ sec.title }}
+          </button>
         </div>
 
         <!-- Active Section Details & Components -->
         <div *ngIf="newFormMaster.sections && newFormMaster.sections[selectedSectionIndex]" 
-             style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+             style="background: #faf5ff; border: 1.5px solid #e9d5ff; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+          
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <input type="text" [(ngModel)]="newFormMaster.sections[selectedSectionIndex].title" style="font-weight: 700; font-size: 14px; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 4px; width: 60%;">
-            <button (click)="addComponentToActiveSection()" style="padding: 5px 10px; background: #10b981; color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 700; cursor: pointer;">+ Add Component</button>
-          </div>
-
-          <!-- Components Table -->
-          <div style="max-height: 240px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; background: white;">
-            <table style="width: 100%; font-size: 12px;">
-              <thead style="background: #f1f5f9;">
-                <tr>
-                  <th style="padding: 6px 8px;">Key</th>
-                  <th style="padding: 6px 8px;">Label</th>
-                  <th style="padding: 6px 8px;">Type</th>
-                  <th style="padding: 6px 8px; text-align: center;">Required</th>
-                  <th style="padding: 6px 8px;">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let comp of newFormMaster.sections[selectedSectionIndex].components; let cIdx = index">
-                  <td style="padding: 4px 8px;"><input type="text" [(ngModel)]="comp.fieldKey" style="width: 100%; padding: 2px 6px; font-family: monospace; font-size: 11px;"></td>
-                  <td style="padding: 4px 8px;"><input type="text" [(ngModel)]="comp.fieldLabel" style="width: 100%; padding: 2px 6px; font-size: 11px;"></td>
-                  <td style="padding: 4px 8px;">
-                    <select [(ngModel)]="comp.componentType" style="padding: 2px 4px; font-size: 11px;">
-                      <option value="TEXT">TEXT</option>
-                      <option value="TEXTAREA">TEXTAREA</option>
-                      <option value="NUMBER">NUMBER</option>
-                      <option value="SELECT">SELECT</option>
-                      <option value="DATE">DATE</option>
-                      <option value="CHECKBOX">CHECKBOX</option>
-                    </select>
-                  </td>
-                  <td style="padding: 4px 8px; text-align: center;">
-                    <input type="checkbox" [(ngModel)]="comp.isRequired">
-                  </td>
-                  <td style="padding: 4px 8px;">
-                    <button (click)="removeComponent(cIdx)" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">✕</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Conditional Form Rules (eFormsPi FormRule) -->
-        <div style="margin-bottom: 20px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <label style="font-size: 13px; font-weight: 700; color: #1e293b;">Conditional Business Rules ({{ newFormMaster.rules?.length || 0 }})</label>
-            <button (click)="addFormRule()" style="padding: 4px 10px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">+ Add Rule</button>
-          </div>
-          <div *ngFor="let r of newFormMaster.rules; let rIdx = index" 
-               style="background: #fffbeb; border: 1px solid #fef3c7; border-radius: 6px; padding: 10px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 12px;">
-            <div>
-              <strong>IF</strong> <code>{{ r.triggerField }}</code> {{ r.conditionOperator }} <code>{{ r.conditionValue }}</code> 
-              <strong>THEN</strong> <span class="badge" style="background: #fde68a; color: #78350f;">{{ r.ruleType }}</span> on <code>{{ r.targetFieldsJson }}</code>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 12px; font-weight: 800; color: #7c3aed;">SECTION {{ selectedSectionIndex + 1 }} CONFIGURATION</span>
+              <button (click)="removeSection(selectedSectionIndex)" 
+                      style="background: none; border: none; color: #ef4444; font-size: 11px; font-weight: 700; cursor: pointer;">
+                (Delete Section)
+              </button>
             </div>
-            <button (click)="removeFormRule(rIdx)" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">✕</button>
+            <button (click)="addComponentToSelectedSection()" 
+                    style="background: #7c3aed; color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;">
+              + Add Input Component
+            </button>
           </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: #6d28d9; margin-bottom: 3px;">Section Title:</label>
+              <input type="text" [(ngModel)]="newFormMaster.sections[selectedSectionIndex].title" 
+                     style="width: 100%; padding: 6px 10px; border: 1px solid #d8b4fe; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: #6d28d9; margin-bottom: 3px;">Layout Columns:</label>
+              <select [(ngModel)]="newFormMaster.sections[selectedSectionIndex].columnLayout" 
+                      style="width: 100%; padding: 6px 10px; border: 1px solid #d8b4fe; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+                <option [value]="1">1 Column (Full Width)</option>
+                <option [value]="2">2 Columns (Half Width)</option>
+                <option [value]="3">3 Columns (Grid)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Components in this Section -->
+          <div style="max-height: 240px; overflow-y: auto;">
+            <div *ngFor="let comp of newFormMaster.sections[selectedSectionIndex].components; let cIdx = index"
+                 style="background: white; border: 1px solid #e9d5ff; border-radius: 6px; padding: 10px; margin-bottom: 8px; display: grid; grid-template-columns: 1.5fr 1.5fr 1fr auto; gap: 8px; align-items: center;">
+              <div>
+                <input type="text" [(ngModel)]="comp.fieldKey" placeholder="fieldKey" style="width: 100%; padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: monospace; font-size: 11px; box-sizing: border-box;">
+              </div>
+              <div>
+                <input type="text" [(ngModel)]="comp.fieldLabel" placeholder="Field Label" style="width: 100%; padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; box-sizing: border-box;">
+              </div>
+              <div>
+                <select [(ngModel)]="comp.componentType" style="width: 100%; padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; box-sizing: border-box;">
+                  <option value="TEXT">TEXT</option>
+                  <option value="NUMBER">NUMBER</option>
+                  <option value="SELECT">SELECT</option>
+                  <option value="TEXTAREA">TEXTAREA</option>
+                  <option value="DATE">DATE</option>
+                </select>
+              </div>
+              <button (click)="removeComponent(cIdx)" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">✕</button>
+            </div>
+          </div>
+
         </div>
 
-        <button (click)="saveFormMaster()" class="btn-primary" style="width: 100%;">💾 Save FormMaster to dhadiya-flow</button>
       </div>
 
-      <!-- Live Dynamic Form Preview -->
-      <div class="card" style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-          <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Interactive Form Preview</h3>
-          <span class="badge" style="background: #dcfce7; color: #15803d; font-size: 11px;">Live Runtime Simulator</span>
-        </div>
-        <p style="font-size: 13px; color: #64748b; margin-bottom: 18px;">Test field interactions and data entry as end-users will experience it.</p>
+      <!-- Live Dynamic Form Rendering Preview -->
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Live Form Rendering Preview</h3>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 16px 0;">Real-time interactive rendering of the multi-section eFormsPi schema.</p>
 
-        <!-- Dynamic Rendering of Form Sections -->
-        <div *ngFor="let sec of newFormMaster.sections" style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 14px; background: #fafafa;">
-          <h4 style="font-size: 13px; font-weight: 700; color: #0284c7; margin: 0 0 10px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">{{ sec.title }}</h4>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-            <div *ngFor="let comp of sec.components" style="display: flex; flex-direction: column;">
-              <label style="font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 4px;">
-                {{ comp.fieldLabel }} <span *ngIf="comp.isRequired" style="color: #ef4444;">*</span>
-              </label>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; max-height: 480px; overflow-y: auto;">
+          <div *ngFor="let sec of newFormMaster.sections; let sIdx = index" style="margin-bottom: 20px;">
+            <div style="font-weight: 800; font-size: 13px; color: #1e293b; padding-bottom: 6px; border-bottom: 1.5px solid #e2e8f0; margin-bottom: 12px;">
+              §{{ sIdx + 1 }}. {{ sec.title }}
+            </div>
+            
+            <div [style.display]="'grid'" 
+                 [style.gridTemplateColumns]="'repeat(' + (sec.columnLayout || 2) + ', 1fr)'" 
+                 style="gap: 12px;">
+              <div *ngFor="let comp of sec.components">
+                <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px;">
+                  {{ comp.fieldLabel }} <span *ngIf="comp.isRequired" style="color: #ef4444;">*</span>
+                </label>
 
-              <!-- Text Input -->
-              <input *ngIf="comp.componentType === 'TEXT'" 
-                     type="text" 
-                     [(ngModel)]="previewFormData[comp.fieldKey]" 
-                     [placeholder]="comp.placeholder || ''" 
-                     style="padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;">
+                <input *ngIf="comp.componentType === 'TEXT'" type="text" [(ngModel)]="previewFormData[comp.fieldKey]" [placeholder]="comp.placeholder || ''"
+                       style="width: 100%; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; box-sizing: border-box;">
 
-              <!-- Number Input -->
-              <input *ngIf="comp.componentType === 'NUMBER'" 
-                     type="number" 
-                     [(ngModel)]="previewFormData[comp.fieldKey]" 
-                     [placeholder]="comp.placeholder || ''" 
-                     style="padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;">
+                <input *ngIf="comp.componentType === 'NUMBER'" type="number" [(ngModel)]="previewFormData[comp.fieldKey]" [placeholder]="comp.placeholder || ''"
+                       style="width: 100%; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; box-sizing: border-box;">
 
-              <!-- Date Input -->
-              <input *ngIf="comp.componentType === 'DATE'" 
-                     type="date" 
-                     [(ngModel)]="previewFormData[comp.fieldKey]" 
-                     style="padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;">
+                <textarea *ngIf="comp.componentType === 'TEXTAREA'" [(ngModel)]="previewFormData[comp.fieldKey]" rows="2" [placeholder]="comp.placeholder || ''"
+                          style="width: 100%; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; box-sizing: border-box;"></textarea>
 
-              <!-- Select Dropdown -->
-              <select *ngIf="comp.componentType === 'SELECT'" 
-                      [(ngModel)]="previewFormData[comp.fieldKey]" 
-                      style="padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;">
-                <option value="">-- Choose --</option>
-                <option *ngFor="let opt of parseOptions(comp.optionsJson)" [value]="opt">{{ opt }}</option>
-              </select>
-
-              <!-- Textarea -->
-              <textarea *ngIf="comp.componentType === 'TEXTAREA'" 
-                        [(ngModel)]="previewFormData[comp.fieldKey]" 
-                        [placeholder]="comp.placeholder || ''" 
-                        rows="2" 
-                        style="padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;"></textarea>
+                <select *ngIf="comp.componentType === 'SELECT'" [(ngModel)]="previewFormData[comp.fieldKey]"
+                        style="width: 100%; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; box-sizing: border-box;">
+                  <option value="">-- Choose Option --</option>
+                  <option *ngFor="let opt of parseJsonOptions(comp.optionsJson)" [value]="opt">{{ opt }}</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Captured Data Output -->
-        <div style="margin-top: 16px;">
-          <label style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Captured Payload State:</label>
-          <pre style="background: #0f172a; color: #a7f3d0; padding: 10px; border-radius: 6px; font-size: 11px; margin-top: 4px; max-height: 140px; overflow-y: auto;">{{ previewFormData | json }}</pre>
-        </div>
       </div>
 
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- TAB 3: WORKFLOW STUDIO (eFormsPi Engine)  -->
-  <!-- ========================================== -->
+  <!-- ============================================================ -->
+  <!-- TAB 4: WORKFLOW LIFECYCLE DESIGNER (Inside Process)          -->
+  <!-- ============================================================ -->
   <div *ngIf="activeTab === 'workflows'">
-    <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px;">
-
-      <!-- Workflow Master Designer -->
-      <div class="card" style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+    <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px;">
+      
+      <!-- Stages & Triggers Modeler -->
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
           <div>
-            <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0;">eFormsPi Workflow Architect</h2>
-            <p style="font-size: 13px; color: #64748b; margin-top: 4px;">Model multi-stage lifecycles, SLA timers, role guards, and transition triggers.</p>
+            <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">Workflow Engine Designer</h2>
+            <p style="font-size: 13px; color: #64748b; margin: 0;">Multi-stage lifecycle orchestration inside process <code>{{ currentProcess.processKey }}</code>.</p>
           </div>
-          <span class="badge" style="background: #dcfce7; color: #15803d; font-weight: 700;">ACTIVE ENGINE</span>
+          <button (click)="addWorkflowStage()" 
+                  style="background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer;">
+            + Add Stage
+          </button>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Workflow Code:</label>
-            <input type="text" [(ngModel)]="newWorkflowMaster.workflowCode" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace;">
+            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Workflow Code:</label>
+            <input type="text" [(ngModel)]="newWorkflowMaster.workflowCode" 
+                   style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace; font-size: 13px; box-sizing: border-box;">
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Workflow Name:</label>
-            <input type="text" [(ngModel)]="newWorkflowMaster.workflowName" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px;">
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 16px;">
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Realm:</label>
-            <select [(ngModel)]="newWorkflowMaster.realmCode" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px;">
-              <option *ngFor="let r of realms" [value]="r">{{ r }}</option>
-            </select>
-          </div>
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Backing Table:</label>
-            <input type="text" [(ngModel)]="newWorkflowMaster.tableName" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace;">
-          </div>
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px;">Dynamic Form:</label>
-            <input type="text" [(ngModel)]="newWorkflowMaster.formCode" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: monospace;">
+            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Workflow Name:</label>
+            <input type="text" [(ngModel)]="newWorkflowMaster.workflowName" 
+                   style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; box-sizing: border-box;">
           </div>
         </div>
 
-        <!-- Stage Pipeline Modeler -->
-        <div style="margin-bottom: 20px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <label style="font-size: 13px; font-weight: 700; color: #1e293b;">Workflow Stages ({{ newWorkflowMaster.stages?.length || 0 }})</label>
-            <button (click)="addStage()" style="padding: 5px 12px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">+ Add Stage</button>
-          </div>
-
-          <div style="max-height: 280px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
-            <table style="width: 100%; font-size: 12px;">
-              <thead style="background: #f8fafc;">
+        <!-- Stages Table -->
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">
+            Execution Stages ({{ newWorkflowMaster.stages?.length || 0 }})
+          </label>
+          <div style="max-height: 260px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+              <thead style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
                 <tr>
-                  <th style="padding: 8px 10px;">Order</th>
-                  <th style="padding: 8px 10px;">Stage Code</th>
-                  <th style="padding: 8px 10px;">Stage Name</th>
-                  <th style="padding: 8px 10px;">Role</th>
-                  <th style="padding: 8px 10px;">SLA (h)</th>
-                  <th style="padding: 8px 10px;">Action</th>
+                  <th style="padding: 6px 10px; text-align: left;">#</th>
+                  <th style="padding: 6px 10px; text-align: left;">Stage Code</th>
+                  <th style="padding: 6px 10px; text-align: left;">Stage Name</th>
+                  <th style="padding: 6px 10px; text-align: left;">Role</th>
+                  <th style="padding: 6px 10px; text-align: left;">SLA (h)</th>
+                  <th style="padding: 6px 10px; text-align: center;">✕</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let stg of newWorkflowMaster.stages; let sIdx = index">
-                  <td style="padding: 6px 10px; font-weight: 700; color: #0284c7;">#{{ stg.stageOrder }}</td>
-                  <td style="padding: 6px 10px;"><input type="text" [(ngModel)]="stg.stageCode" style="width: 100%; padding: 3px 6px; font-family: monospace; font-size: 11px;"></td>
-                  <td style="padding: 6px 10px;"><input type="text" [(ngModel)]="stg.stageName" style="width: 100%; padding: 3px 6px; font-size: 11px;"></td>
-                  <td style="padding: 6px 10px;"><input type="text" [(ngModel)]="stg.allowedRole" style="width: 100%; padding: 3px 6px; font-size: 11px;"></td>
-                  <td style="padding: 6px 10px;"><input type="number" [(ngModel)]="stg.slaHours" style="width: 50px; padding: 3px 6px; font-size: 11px;"></td>
+                <tr *ngFor="let stg of newWorkflowMaster.stages; let sIdx = index" style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 6px 10px; font-weight: 700; color: #0284c7;">{{ stg.stageOrder }}</td>
                   <td style="padding: 6px 10px;">
-                    <button (click)="removeStage(sIdx)" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">✕</button>
+                    <input type="text" [(ngModel)]="stg.stageCode" style="width: 100%; padding: 3px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: monospace; font-size: 11px; box-sizing: border-box;">
+                  </td>
+                  <td style="padding: 6px 10px;">
+                    <input type="text" [(ngModel)]="stg.stageName" style="width: 100%; padding: 3px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; box-sizing: border-box;">
+                  </td>
+                  <td style="padding: 6px 10px;">
+                    <input type="text" [(ngModel)]="stg.allowedRole" style="width: 100%; padding: 3px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; box-sizing: border-box;">
+                  </td>
+                  <td style="padding: 6px 10px;">
+                    <input type="number" [(ngModel)]="stg.slaHours" style="width: 45px; padding: 3px 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; box-sizing: border-box;">
+                  </td>
+                  <td style="padding: 6px 10px; text-align: center;">
+                    <button (click)="removeWorkflowStage(sIdx)" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">✕</button>
                   </td>
                 </tr>
               </tbody>
@@ -425,67 +612,175 @@
           </div>
         </div>
 
-        <!-- Triggers & Transition Rules (WorkflowTrigger) -->
-        <div style="margin-bottom: 20px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <label style="font-size: 13px; font-weight: 700; color: #1e293b;">State Transition Triggers ({{ newWorkflowMaster.triggers?.length || 0 }})</label>
-            <button (click)="addTrigger()" style="padding: 5px 12px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">+ Add Trigger</button>
+        <!-- Triggers Section -->
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label style="font-size: 12px; font-weight: 700; color: #1e293b;">
+              Stage Transition Triggers ({{ newWorkflowMaster.triggers?.length || 0 }})
+            </label>
+            <button (click)="addTrigger()" 
+                    style="padding: 4px 10px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
+              + Add Trigger
+            </button>
           </div>
-          <div *ngFor="let trg of newWorkflowMaster.triggers; let tIdx = index" 
-               style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 10px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 12px;">
-            <div>
-              <code>{{ trg.sourceStageCode }}</code> ➔ Action: <strong style="color: #166534;">{{ trg.actionName }}</strong> ➔ <code>{{ trg.targetStageCode }}</code>
+
+          <div style="max-height: 180px; overflow-y: auto;">
+            <div *ngFor="let trg of newWorkflowMaster.triggers; let tIdx = index"
+                 style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 8px 12px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 11px;">
+              <div>
+                <code>{{ trg.sourceStageCode }}</code> ➔ Action: <strong style="color: #166534;">{{ trg.actionName }}</strong> ➔ <code>{{ trg.targetStageCode }}</code>
+              </div>
+              <button (click)="removeTrigger(tIdx)" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">✕</button>
             </div>
-            <button (click)="removeTrigger(tIdx)" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">✕</button>
           </div>
         </div>
 
-        <button (click)="saveWorkflowMaster()" class="btn-primary" style="width: 100%;">🚀 Deploy Workflow Engine Definition</button>
       </div>
 
-      <!-- Visual Stage Pipeline Graph -->
-      <div class="card" style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px;">
-        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 12px;">Visual Pipeline Architecture</h3>
-        <p style="font-size: 13px; color: #64748b; margin-bottom: 18px;">Execution path for cases transitioning through dhadiya-flow engine.</p>
+      <!-- Visual Pipeline Sequence Flow -->
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Visual Pipeline Sequence</h3>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 18px 0;">Sequence execution cards for cases passing through <strong>dhadiya-flow</strong>.</p>
 
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-          <div *ngFor="let stg of newWorkflowMaster.stages; let idx = index" 
-               style="border-left: 4px solid #0284c7; background: #f8fafc; padding: 14px; border-radius: 0 8px 8px 0; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+        <div style="display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto;">
+          <div *ngFor="let stg of newWorkflowMaster.stages; let idx = index"
+               [style.borderLeftColor]="stg.stageColor || '#0284c7'"
+               style="border-left: 4px solid; background: #f8fafc; padding: 12px 14px; border-radius: 0 8px 8px 0; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <span style="font-size: 11px; font-weight: 800; color: #0284c7;">STEP {{ stg.stageOrder }}</span>
-                <h4 style="font-size: 14px; font-weight: 700; margin: 2px 0; color: #0f172a;">{{ stg.stageName }}</h4>
-                <div style="font-size: 11px; color: #64748b;">Code: <code>{{ stg.stageCode }}</code> | Role: <strong>{{ stg.allowedRole }}</strong></div>
+                <span style="font-size: 10px; font-weight: 800; color: #0284c7;">STAGE {{ stg.stageOrder }} ({{ stg.stageType || 'INTERMEDIATE' }})</span>
+                <h4 style="font-size: 13px; font-weight: 700; margin: 2px 0; color: #0f172a;">{{ stg.stageName }}</h4>
+                <div style="font-size: 11px; color: #64748b;">
+                  Code: <code>{{ stg.stageCode }}</code> | Role: <strong>{{ stg.allowedRole }}</strong>
+                </div>
               </div>
-              <div style="text-align: right;">
-                <span class="badge" style="background: #e0f2fe; color: #0369a1;">SLA: {{ stg.slaHours }}h</span>
-              </div>
+              <span style="background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">
+                SLA: {{ stg.slaHours }}h
+              </span>
             </div>
             <div *ngIf="stg.actionsAllowed" style="margin-top: 6px; font-size: 11px; color: #059669;">
-              Allowed: <code>{{ stg.actionsAllowed }}</code>
+              Allowed Actions: <code>{{ stg.actionsAllowed }}</code>
             </div>
           </div>
         </div>
+
       </div>
 
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- TAB 4: STUDIO ASSET EXPLORER              -->
-  <!-- ========================================== -->
+  <!-- ============================================================ -->
+  <!-- TAB 5: LIVE TEST RUNNER (Execute Case inside Process)        -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeTab === 'testrunner'">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+      
+      <!-- Launch Test Case Card -->
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+        <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">Execute Live Process Case</h2>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 18px 0;">
+          Initiate a new instance of process <code>{{ currentProcess.processKey }}</code> for tenant <strong>{{ currentProcess.realmCode }}</strong>.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Initiator Email:</label>
+            <input type="text" [(ngModel)]="testCaseInitiator" 
+                   style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px;">Priority:</label>
+            <select [(ngModel)]="testCasePriority" 
+                    style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-weight: 700; box-sizing: border-box;">
+              <option value="LOW">LOW</option>
+              <option value="NORMAL">NORMAL</option>
+              <option value="HIGH">HIGH</option>
+              <option value="CRITICAL">CRITICAL</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 20px;">
+          <h4 style="font-size: 12px; font-weight: 800; color: #334155; margin: 0 0 8px 0;">Initial Form Submission Payload:</h4>
+          <pre style="background: #0f172a; color: #a7f3d0; padding: 10px; border-radius: 6px; font-size: 11px; max-height: 150px; overflow-y: auto; margin: 0;">{{ previewFormData | json }}</pre>
+        </div>
+
+        <button (click)="runTestCase()" 
+                style="background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; font-size: 14px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);">
+          🚀 Submit & Execute Process Case
+        </button>
+
+      </div>
+
+      <!-- Test Execution Result -->
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+        <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Engine Execution Output</h3>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 16px 0;">Real-time workflow engine response & backing table synchronization.</p>
+
+        <div *ngIf="!testRunResult" style="padding: 40px; text-align: center; color: #94a3b8; border: 2px dashed #e2e8f0; border-radius: 8px;">
+          No test case executed yet. Click "Submit & Execute Process Case" to start a live workflow instance.
+        </div>
+
+        <div *ngIf="testRunResult" style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 10px; padding: 18px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 12px; font-weight: 800; color: #047857;">CASE CREATED SUCCESSFULLY</span>
+            <span style="background: #dcfce7; color: #15803d; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-family: monospace; font-size: 12px;">
+              {{ testRunResult.caseNumber }}
+            </span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: #065f46; margin-bottom: 16px;">
+            <div><strong>Active Stage:</strong> <code>{{ testRunResult.currentStageCode }}</code></div>
+            <div><strong>Workflow Status:</strong> <code>{{ testRunResult.status }}</code></div>
+            <div><strong>Tenant Realm:</strong> <code>{{ testRunResult.realmCode }}</code></div>
+            <div><strong>Auto-Synced Table:</strong> <code>{{ currentProcess.tableName || newTable.tableName }}</code></div>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <a [routerLink]="['/tasks']" 
+               style="background: #047857; color: white; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; text-decoration: none;">
+              Open in Tasks & Kanban Board ➔
+            </a>
+            <a [routerLink]="['/datagrid']" 
+               style="background: white; color: #047857; border: 1px solid #047857; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; text-decoration: none;">
+              Inspect in Virtual DataGrid ➔
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 6: TENANT ASSET EXPLORER                                 -->
+  <!-- ============================================================ -->
   <div *ngIf="activeTab === 'explorer'">
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px;">
 
+      <!-- Live Processes -->
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">📋 Master Processes</h3>
+          <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 12px;">{{ existingProcesses.length }}</span>
+        </div>
+        <div *ngFor="let p of existingProcesses" style="padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; background: #fafafa;">
+          <div style="font-weight: 700; color: #0f172a;">{{ p.name }}</div>
+          <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Key: <code>{{ p.processKey }}</code> | Realm: <strong>{{ p.realmCode }}</strong></div>
+          <div style="font-size: 11px; color: #0284c7; margin-top: 4px;">Industry: <strong>{{ p.industryType }}</strong> | Table: <code>{{ p.tableName }}</code></div>
+        </div>
+      </div>
+
       <!-- Live Dynamic Tables -->
-      <div class="card" style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px;">
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
           <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">📊 Dynamic Tables</h3>
-          <span class="badge" style="background: #e0f2fe; color: #0369a1;">{{ existingTables.length }}</span>
+          <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 12px;">{{ existingGridTables.length }}</span>
         </div>
-        <div *ngFor="let tbl of existingTables" style="padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; background: #fafafa;">
+        <div *ngFor="let tbl of existingGridTables" style="padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; background: #fafafa;">
           <div style="font-weight: 700; color: #0f172a;">{{ tbl.label || tbl.tableName }}</div>
-          <div style="font-size: 12px; color: #64748b;">Key: <code>{{ tbl.tableName }}</code> | Realm: <strong>{{ tbl.realmCode }}</strong></div>
+          <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Key: <code>{{ tbl.tableName }}</code> | Realm: <strong>{{ tbl.realmCode }}</strong></div>
           <div style="margin-top: 8px;">
             <a [routerLink]="['/datagrid']" style="font-size: 12px; color: #0284c7; font-weight: 700; text-decoration: none;">View Records in DataGrid ➔</a>
           </div>
@@ -493,29 +788,29 @@
       </div>
 
       <!-- Live Dynamic Forms -->
-      <div class="card" style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px;">
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
           <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">📝 Form Masters</h3>
-          <span class="badge" style="background: #fef3c7; color: #92400e;">{{ existingFormMasters.length }}</span>
+          <span style="background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 12px;">{{ existingFormMasters.length }}</span>
         </div>
         <div *ngFor="let frm of existingFormMasters" style="padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; background: #fafafa;">
           <div style="font-weight: 700; color: #0f172a;">{{ frm.formName }}</div>
-          <div style="font-size: 12px; color: #64748b;">Code: <code>{{ frm.formCode }}</code> | Category: <strong>{{ frm.category }}</strong></div>
-          <div style="margin-top: 8px;">
-            <span class="badge" style="background: #dcfce7; color: #15803d; font-size: 11px;">v{{ frm.version || 1 }} PUBLISHED</span>
+          <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Code: <code>{{ frm.formCode }}</code> | Category: <strong>{{ frm.category }}</strong></div>
+          <div style="margin-top: 6px;">
+            <span style="background: #dcfce7; color: #15803d; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700;">v{{ frm.version || 1 }} PUBLISHED</span>
           </div>
         </div>
       </div>
 
       <!-- Live Workflow Engines -->
-      <div class="card" style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 22px;">
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
           <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">🔄 Workflow Masters</h3>
-          <span class="badge" style="background: #dcfce7; color: #15803d;">{{ existingWorkflowMasters.length }}</span>
+          <span style="background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 12px;">{{ existingWorkflowMasters.length }}</span>
         </div>
         <div *ngFor="let wf of existingWorkflowMasters" style="padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; background: #fafafa;">
           <div style="font-weight: 700; color: #0f172a;">{{ wf.workflowName }}</div>
-          <div style="font-size: 12px; color: #64748b;">Code: <code>{{ wf.workflowCode }}</code> | Table: <code>{{ wf.tableName }}</code></div>
+          <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Code: <code>{{ wf.workflowCode }}</code> | Table: <code>{{ wf.tableName }}</code></div>
           <div style="margin-top: 8px;">
             <a [routerLink]="['/workflows']" style="font-size: 12px; color: #0284c7; font-weight: 700; text-decoration: none;">Launch Workflow Engine ➔</a>
           </div>

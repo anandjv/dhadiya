@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ShowroomUser, UserInviteRequest } from '../models/user.model';
 
@@ -11,24 +11,36 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  getUsers(realmCode?: string): Observable<ShowroomUser[]> {
-    const url = realmCode && realmCode !== 'all' ? `${this.apiUrl}?realmCode=${realmCode}` : this.apiUrl;
-    return this.http.get<ShowroomUser[]>(url);
+  private getHeaders(realmCode?: string): HttpHeaders {
+    let headers = new HttpHeaders();
+    if (realmCode && realmCode !== 'all') {
+      headers = headers.set('X-Tenant-ID', realmCode);
+    }
+    return headers;
   }
 
-  getUserById(id: number): Observable<ShowroomUser> {
-    return this.http.get<ShowroomUser>(`${this.apiUrl}/${id}`);
+  getUsers(realmCode?: string): Observable<ShowroomUser[]> {
+    const url = realmCode && realmCode !== 'all' ? `${this.apiUrl}?realmCode=${realmCode}` : this.apiUrl;
+    return this.http.get<ShowroomUser[]>(url, { headers: this.getHeaders(realmCode) });
+  }
+
+  getUserById(id: number, realmCode?: string): Observable<ShowroomUser> {
+    const url = realmCode ? `${this.apiUrl}/${id}?realmCode=${realmCode}` : `${this.apiUrl}/${id}`;
+    return this.http.get<ShowroomUser>(url, { headers: this.getHeaders(realmCode) });
   }
 
   createUser(payload: UserInviteRequest): Observable<ShowroomUser> {
-    return this.http.post<ShowroomUser>(this.apiUrl, payload);
+    const url = payload.realmCode ? `${this.apiUrl}?realmCode=${payload.realmCode}` : this.apiUrl;
+    return this.http.post<ShowroomUser>(url, payload, { headers: this.getHeaders(payload.realmCode) });
   }
 
-  updateUserStatus(id: number, status: string): Observable<ShowroomUser> {
-    return this.http.patch<ShowroomUser>(`${this.apiUrl}/${id}/status`, { status });
+  updateUserStatus(id: number, status: string, realmCode?: string): Observable<ShowroomUser> {
+    const url = realmCode ? `${this.apiUrl}/${id}/status?realmCode=${realmCode}` : `${this.apiUrl}/${id}/status`;
+    return this.http.patch<ShowroomUser>(url, { status }, { headers: this.getHeaders(realmCode) });
   }
 
-  deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteUser(id: number, realmCode?: string): Observable<void> {
+    const url = realmCode ? `${this.apiUrl}/${id}?realmCode=${realmCode}` : `${this.apiUrl}/${id}`;
+    return this.http.delete<void>(url, { headers: this.getHeaders(realmCode) });
   }
 }

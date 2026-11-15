@@ -23,6 +23,13 @@ public class ProcessController {
 
     private final WorkflowOrchestrationService orchestrationService;
 
+    @GetMapping
+    @Operation(summary = "Get process definitions for a realm")
+    public ResponseEntity<List<ProcessDefinition>> getAll(
+            @RequestParam(defaultValue = "dhadiya-showroom-global") String realmCode) {
+        return ResponseEntity.ok(orchestrationService.getDefinitions(realmCode));
+    }
+
     @GetMapping("/definitions")
     @Operation(summary = "Get process definitions for a realm")
     public ResponseEntity<List<ProcessDefinition>> getDefinitions(
@@ -34,6 +41,23 @@ public class ProcessController {
     @Operation(summary = "Publish a process definition")
     public ResponseEntity<ProcessDefinition> saveDefinition(@RequestBody ProcessDefinition definition) {
         return ResponseEntity.status(HttpStatus.CREATED).body(orchestrationService.saveDefinition(definition));
+    }
+
+    @PostMapping("/bundle")
+    @Operation(summary = "Publish dynamic process bundle: table schema, dynamic form, and workflow stages")
+    public ResponseEntity<com.dhadiya.flow.dto.ProcessBundleDto> saveProcessBundle(
+            @RequestBody com.dhadiya.flow.dto.ProcessBundleDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(orchestrationService.saveProcessBundle(dto));
+    }
+
+    @GetMapping("/{processKey}/bundle")
+    @Operation(summary = "Get complete dynamic process bundle with table, form, and workflow")
+    public ResponseEntity<com.dhadiya.flow.dto.ProcessBundleDto> getProcessBundle(
+            @PathVariable String processKey,
+            @RequestParam(defaultValue = "dhadiya-showroom-global") String realmCode) {
+        com.dhadiya.flow.dto.ProcessBundleDto bundle = orchestrationService.getProcessBundle(realmCode, processKey);
+        if (bundle == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(bundle);
     }
 
     @PostMapping("/instances/start")

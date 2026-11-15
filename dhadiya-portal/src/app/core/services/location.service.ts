@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ShowroomLocation, LocationCreateRequest } from '../models/location.model';
 
@@ -11,20 +11,31 @@ export class LocationService {
 
   constructor(private http: HttpClient) {}
 
-  getLocations(realmCode?: string): Observable<ShowroomLocation[]> {
-    const url = realmCode && realmCode !== 'all' ? `${this.apiUrl}?realmCode=${realmCode}` : this.apiUrl;
-    return this.http.get<ShowroomLocation[]>(url);
+  private getHeaders(realmCode?: string): HttpHeaders {
+    let headers = new HttpHeaders();
+    if (realmCode && realmCode !== 'all') {
+      headers = headers.set('X-Tenant-ID', realmCode);
+    }
+    return headers;
   }
 
-  getLocationByCode(locationCode: string): Observable<ShowroomLocation> {
-    return this.http.get<ShowroomLocation>(`${this.apiUrl}/${locationCode}`);
+  getLocations(realmCode?: string): Observable<ShowroomLocation[]> {
+    const url = realmCode && realmCode !== 'all' ? `${this.apiUrl}?realmCode=${realmCode}` : this.apiUrl;
+    return this.http.get<ShowroomLocation[]>(url, { headers: this.getHeaders(realmCode) });
+  }
+
+  getLocationByCode(locationCode: string, realmCode?: string): Observable<ShowroomLocation> {
+    const url = realmCode ? `${this.apiUrl}/${locationCode}?realmCode=${realmCode}` : `${this.apiUrl}/${locationCode}`;
+    return this.http.get<ShowroomLocation>(url, { headers: this.getHeaders(realmCode) });
   }
 
   createLocation(payload: LocationCreateRequest): Observable<ShowroomLocation> {
-    return this.http.post<ShowroomLocation>(this.apiUrl, payload);
+    const url = payload.realmCode ? `${this.apiUrl}?realmCode=${payload.realmCode}` : this.apiUrl;
+    return this.http.post<ShowroomLocation>(url, payload, { headers: this.getHeaders(payload.realmCode) });
   }
 
-  deleteLocation(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteLocation(id: number, realmCode?: string): Observable<void> {
+    const url = realmCode ? `${this.apiUrl}/${id}?realmCode=${realmCode}` : `${this.apiUrl}/${id}`;
+    return this.http.delete<void>(url, { headers: this.getHeaders(realmCode) });
   }
 }

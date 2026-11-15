@@ -1,0 +1,98 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">
+        <span class="badge-accent">SECURITY & GOVERNANCE</span>
+        <span class="text-muted">&bull; Immutable Audit Logs</span>
+      </div>
+      <h1 class="page-title">System Activity Logs & Audit Trail</h1>
+      <p class="page-subtitle">
+        Tamper-evident chronological audit trail recording logins, vehicle workflow transitions, inventory edits, and administrative role assignments across all showroom territories.
+      </p>
+    </div>
+    <div class="page-actions">
+      <button (click)="loadLogs()" class="btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+        Refresh Trail
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter & Search Bar -->
+  <div class="table-card" style="margin-bottom: 20px; padding: 16px 20px;">
+    <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 240px;">
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Search user email, summary, entity ID..." class="form-input" style="width: 100%;">
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <label style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase;">Action:</label>
+        <select [(ngModel)]="filterAction" class="form-input" style="width: 200px;">
+          <option value="">All Action Types</option>
+          <option value="WORKFLOW_TRANSITION">Workflow Transitions</option>
+          <option value="RECORD_INSERT">Record Insertions</option>
+          <option value="LOGIN">User Logins</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Logs Table -->
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Territory Realm</th>
+          <th>Action Type</th>
+          <th>User Account</th>
+          <th>Target Entity</th>
+          <th>Action Summary</th>
+          <th>IP Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of filteredLogs">
+          <td style="font-size: 12px; color: #64748b; white-space: nowrap;">
+            {{ log.timestamp | date:'MMM d, y, h:mm:ss a' }}
+          </td>
+          <td>
+            <span style="font-size: 11.5px; font-weight: 700; color: #475569; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">
+              {{ log.realmCode }}
+            </span>
+          </td>
+          <td>
+            <span [style.background]="log.actionType === 'WORKFLOW_TRANSITION' ? '#e0f2fe' : log.actionType === 'LOGIN' ? '#f0fdf4' : '#fef3c7'"
+                  [style.color]="log.actionType === 'WORKFLOW_TRANSITION' ? '#0284c7' : log.actionType === 'LOGIN' ? '#16a34a' : '#d97706'"
+                  style="font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase;">
+              {{ log.actionType }}
+            </span>
+          </td>
+          <td style="font-weight: 700; color: #0f172a; font-size: 13px;">
+            {{ log.userEmail }}
+          </td>
+          <td>
+            <div style="font-family: monospace; font-size: 12px; font-weight: 700; color: #334155;">
+              {{ log.entityType }}: {{ log.entityId }}
+            </div>
+          </td>
+          <td style="font-size: 13px; color: #1e293b; max-width: 380px;">
+            {{ log.summary }}
+          </td>
+          <td style="font-family: monospace; font-size: 11.5px; color: #64748b;">
+            {{ log.ipAddress || '127.0.0.1' }}
+          </td>
+        </tr>
+        <tr *ngIf="filteredLogs.length === 0">
+          <td colspan="7" style="text-align: center; padding: 36px; color: #94a3b8;">
+            No audit log entries matching criteria.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

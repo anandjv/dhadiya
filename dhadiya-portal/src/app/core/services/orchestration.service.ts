@@ -72,6 +72,36 @@ export class OrchestrationService {
     return this.http.get<WorkflowTaskItem[]>(url);
   }
 
+  getKanbanBoard(workflowCode = 'WF_SHOWROOM_DELIVERY_HANDOVER', realmCode = 'dhadiya-showroom-global'): Observable<any> {
+    return this.http.get<any>(`${this.engineUrl}/kanban?workflowCode=${encodeURIComponent(workflowCode)}&realmCode=${encodeURIComponent(realmCode)}`);
+  }
+
+  completeTaskItem(taskId: number, action = 'COMPLETED', remarks?: string): Observable<WorkflowTaskItem> {
+    let url = `${this.engineUrl}/tasks/${taskId}/complete?action=${encodeURIComponent(action)}`;
+    if (remarks) url += `&remarks=${encodeURIComponent(remarks)}`;
+    return this.http.post<WorkflowTaskItem>(url, {});
+  }
+
+  getAnalytics(realmCode?: string): Observable<any> {
+    const url = realmCode ? `/api/v1/reports/analytics?realmCode=${encodeURIComponent(realmCode)}` : '/api/v1/reports/analytics';
+    return this.http.get<any>(url);
+  }
+
+  getReportDefinitions(realmCode?: string): Observable<any[]> {
+    const url = realmCode ? `/api/v1/reports/definitions?realmCode=${encodeURIComponent(realmCode)}` : '/api/v1/reports/definitions';
+    return this.http.get<any[]>(url);
+  }
+
+  runReport(reportKey: string, realmCode?: string): Observable<any> {
+    const url = realmCode ? `/api/v1/reports/run/${encodeURIComponent(reportKey)}?realmCode=${encodeURIComponent(realmCode)}` : `/api/v1/reports/run/${encodeURIComponent(reportKey)}`;
+    return this.http.get<any>(url);
+  }
+
+  getActivityLogs(realmCode?: string): Observable<any[]> {
+    const url = realmCode ? `/api/v1/activity-logs?realmCode=${encodeURIComponent(realmCode)}` : '/api/v1/activity-logs';
+    return this.http.get<any[]>(url);
+  }
+
   // ==========================================
   // eFormsPi CORE DYNAMIC FORMS APIS
   // ==========================================
@@ -98,6 +128,14 @@ export class OrchestrationService {
 
   saveDefinition(definition: ProcessDefinition): Observable<ProcessDefinition> {
     return this.http.post<ProcessDefinition>(`${this.processUrl}/definitions`, definition);
+  }
+
+  saveProcessBundle(bundle: any): Observable<any> {
+    return this.http.post<any>(`${this.processUrl}/bundle`, bundle);
+  }
+
+  getProcessBundle(processKey: string, realmCode = 'dhadiya-showroom-global'): Observable<any> {
+    return this.http.get<any>(`${this.processUrl}/${encodeURIComponent(processKey)}/bundle?realmCode=${encodeURIComponent(realmCode)}`);
   }
 
   getInstances(realmCode = 'dhadiya-showroom-global'): Observable<ProcessInstance[]> {

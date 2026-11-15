@@ -1,0 +1,266 @@
+<div class="page-container">
+  <!-- Top Navigation & Header -->
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">
+        <span class="badge-accent">WORKFLOW OPERATIONS</span>
+        <span class="text-muted">&bull; Live Task & Kanban Queue</span>
+      </div>
+      <h1 class="page-title">Technician & Advisor Task Queue</h1>
+      <p class="page-subtitle">
+        Visual Kanban dispatch board and prioritized task inbox for vehicle intake inspections, 120-point PDI diagnostics, and VIP delivery sign-offs.
+      </p>
+    </div>
+    <div class="page-actions" style="display: flex; gap: 10px; align-items: center;">
+      <!-- View Mode Toggle -->
+      <div style="background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 4px; display: flex; gap: 4px;">
+        <button (click)="viewMode = 'kanban'" [style.background]="viewMode === 'kanban' ? '#0284c7' : 'transparent'" [style.color]="viewMode === 'kanban' ? 'white' : '#64748b'" style="border: none; border-radius: 6px; padding: 6px 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="18" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="11" rx="1"></rect>
+          </svg>
+          Kanban Board
+        </button>
+        <button (click)="viewMode = 'list'" [style.background]="viewMode === 'list' ? '#0284c7' : 'transparent'" [style.color]="viewMode === 'list' ? 'white' : '#64748b'" style="border: none; border-radius: 6px; padding: 6px 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+          Task Inbox ({{ pendingTasks.length }})
+        </button>
+      </div>
+
+      <button (click)="loadData()" class="btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Summary Banner -->
+  <div class="kpi-grid" style="margin-bottom: 24px;">
+    <div class="kpi-card" style="border-top: 4px solid #0284c7;">
+      <div class="kpi-header">
+        <span class="kpi-label">OPEN DISPATCH TASKS</span>
+        <div class="kpi-icon-wrap" style="background: rgba(2, 132, 199, 0.1); color: #0284c7;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">{{ pendingTasks.length }}</div>
+      <div style="font-size: 12px; color: #64748b; font-weight: 600;">Active showroom assignments</div>
+    </div>
+
+    <div class="kpi-card" style="border-top: 4px solid #10b981;">
+      <div class="kpi-header">
+        <span class="kpi-label">ACTIVE VEHICLE CASES</span>
+        <div class="kpi-icon-wrap" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">{{ cases.length }}</div>
+      <div style="font-size: 12px; color: #10b981; font-weight: 600;">PDI & VIP deliveries in progress</div>
+    </div>
+
+    <div class="kpi-card" style="border-top: 4px solid #f59e0b;">
+      <div class="kpi-header">
+        <span class="kpi-label">ACTIVE STAGE LANES</span>
+        <div class="kpi-icon-wrap" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">{{ kanbanBoard?.columns?.length || 5 }}</div>
+      <div style="font-size: 12px; color: #d97706; font-weight: 600;">Linear luxury delivery stages</div>
+    </div>
+
+    <div class="kpi-card" style="border-top: 4px solid #6366f1;">
+      <div class="kpi-header">
+        <span class="kpi-label">SLA TARGET WINDOW</span>
+        <div class="kpi-icon-wrap" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-value">&lt; 48h</div>
+      <div style="font-size: 12px; color: #6366f1; font-weight: 600;">Standard VIP delivery turnaround</div>
+    </div>
+  </div>
+
+  <!-- KANBAN BOARD VIEW -->
+  <div *ngIf="viewMode === 'kanban'" style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 20px;">
+    <div *ngFor="let col of kanbanBoard?.columns" style="flex: 0 0 310px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; display: flex; flex-direction: column; max-height: calc(100vh - 280px);">
+      <!-- Column Header -->
+      <div style="padding: 14px 16px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; background: white; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span [style.background]="col.colorCode || '#0284c7'" style="width: 10px; height: 10px; border-radius: 50%; display: inline-block;"></span>
+          <span style="font-size: 13px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.03em;">{{ col.stageName }}</span>
+        </div>
+        <span style="background: #e2e8f0; color: #475569; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px;">
+          {{ col.count || 0 }}
+        </span>
+      </div>
+
+      <!-- Column Card Container -->
+      <div style="padding: 12px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1;">
+        <!-- Empty State -->
+        <div *ngIf="!col.cases || col.cases.length === 0" style="padding: 24px 12px; text-align: center; color: #94a3b8; font-size: 12.5px;">
+          No vehicles in this stage
+        </div>
+
+        <!-- Case Cards -->
+        <div *ngFor="let c of col.cases" style="background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: transform 0.15s ease, box-shadow 0.15s ease;"
+             onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)'; this.style.transform='translateY(-2px)'"
+             onmouseout="this.style.boxShadow='0 1px 3px rgba(0,0,0,0.04)'; this.style.transform='none'">
+          <!-- Case Number & Priority -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-family: monospace; font-size: 12px; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 2px 6px; border-radius: 4px;">
+              {{ c.caseNumber }}
+            </span>
+            <span [style.background]="c.priority === 'URGENT' ? '#fee2e2' : c.priority === 'HIGH' ? '#fef3c7' : '#f1f5f9'"
+                  [style.color]="c.priority === 'URGENT' ? '#ef4444' : c.priority === 'HIGH' ? '#d97706' : '#64748b'"
+                  style="font-size: 10.5px; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">
+              {{ c.priority || 'NORMAL' }}
+            </span>
+          </div>
+
+          <!-- Vehicle Model / Title -->
+          <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">
+            {{ parsePayload(c.dataPayloadJson)?.modelName || c.caseNumber }}
+          </div>
+
+          <!-- Location & Details -->
+          <div style="font-size: 12px; color: #64748b; margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px;">
+            <div *ngIf="parsePayload(c.dataPayloadJson)?.vinCode" style="display: flex; align-items: center; gap: 4px;">
+              <span style="font-weight: 600; color: #475569;">VIN:</span>
+              <span style="font-family: monospace;">{{ parsePayload(c.dataPayloadJson)?.vinCode }}</span>
+            </div>
+            <div *ngIf="parsePayload(c.dataPayloadJson)?.showroomLocation" style="display: flex; align-items: center; gap: 4px;">
+              <span>📍 {{ parsePayload(c.dataPayloadJson)?.showroomLocation }}</span>
+            </div>
+          </div>
+
+          <!-- Footer / Actions -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 10px;">
+            <span style="font-size: 11px; color: #94a3b8;">
+              By: {{ c.initiatedBy ? c.initiatedBy.split('@')[0] : 'System' }}
+            </span>
+            <a routerLink="/workflows" class="btn-secondary" style="padding: 4px 10px; font-size: 11.5px; text-decoration: none;">
+              Action &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK LIST / INBOX VIEW -->
+  <div *ngIf="viewMode === 'list'" class="table-card">
+    <div class="table-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <h3 class="table-card-title">Pending Action Inbox</h3>
+        <p class="table-card-subtitle">Technician sign-offs, detailing confirmations, and showroom delivery approvals requiring your action.</p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Search tasks, VIN, cases..." class="form-input" style="width: 260px; padding: 6px 12px; font-size: 13px;">
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Case Number</th>
+          <th>Task Title</th>
+          <th>Stage</th>
+          <th>Priority</th>
+          <th>Assigned To</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of filteredTasks">
+          <td>
+            <span style="font-family: monospace; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 2px 6px; border-radius: 4px;">
+              {{ t.caseNumber }}
+            </span>
+          </td>
+          <td>
+            <div style="font-weight: 700; color: #0f172a;">{{ t.taskTitle }}</div>
+            <div *ngIf="t.roleName" style="font-size: 11px; color: #64748b;">Role: {{ t.roleName }}</div>
+          </td>
+          <td>
+            <span class="badge-stage">{{ t.stageCode }}</span>
+          </td>
+          <td>
+            <span [style.background]="t.priority === 'URGENT' ? '#fee2e2' : t.priority === 'HIGH' ? '#fef3c7' : '#f1f5f9'"
+                  [style.color]="t.priority === 'URGENT' ? '#ef4444' : t.priority === 'HIGH' ? '#d97706' : '#64748b'"
+                  style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; text-transform: uppercase;">
+              {{ t.priority || 'NORMAL' }}
+            </span>
+          </td>
+          <td style="font-size: 12.5px; color: #475569;">
+            {{ t.assignedTo || 'Unassigned Queue' }}
+          </td>
+          <td>
+            <span class="status-pill status-active">{{ t.status }}</span>
+          </td>
+          <td>
+            <button (click)="openCompleteModal(t)" class="btn-luxury" style="padding: 4px 12px; font-size: 12px;">
+              Complete &rarr;
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredTasks.length === 0">
+          <td colspan="7" style="text-align: center; padding: 36px; color: #94a3b8;">
+            No pending tasks matching your criteria.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Complete Task Modal -->
+  <div *ngIf="activeActionModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;">
+    <div style="background: white; border-radius: 12px; max-width: 520px; width: 100%; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);">
+      <h3 style="margin-top: 0; margin-bottom: 6px; font-size: 18px; font-weight: 800; color: #0f172a;">Complete Showroom Task</h3>
+      <p style="color: #64748b; font-size: 13.5px; margin-bottom: 16px;">
+        Sign off on task for case <strong style="color: #0284c7;">{{ activeActionModal.task?.caseNumber }}</strong>.
+      </p>
+
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase;">Task Summary</label>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; font-size: 13px; color: #1e293b;">
+          {{ activeActionModal.task?.taskTitle }}
+        </div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase;">Technician / Sign-off Remarks</label>
+        <textarea [(ngModel)]="actionRemarks" rows="3" class="form-input" placeholder="e.g. 120-Point PDI complete. Fluid levels, brakes, OBD-II diagnostic clear. Ready for VIP detailing." style="width: 100%; box-sizing: border-box;"></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button (click)="closeModal()" class="btn-secondary" [disabled]="completingTaskId !== null">Cancel</button>
+        <button (click)="confirmCompleteTask()" class="btn-luxury" [disabled]="completingTaskId !== null">
+          {{ completingTaskId !== null ? 'Saving...' : '✓ Confirm & Sign Off' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
